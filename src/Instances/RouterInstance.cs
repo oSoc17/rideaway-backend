@@ -1,4 +1,7 @@
 using Itinero;
+using Itinero.LocalGeo;
+using Itinero.Profiles;
+using Itinero.Navigation;
 using System.IO;
 
 namespace rideaway_backend.Instance
@@ -20,6 +23,14 @@ namespace rideaway_backend.Instance
 
         public static Router getRouter(){
             return router;
+        }
+
+        public static Route Calculate(string profileName, Coordinate from, Coordinate to){
+            Profile profile = RouterInstance.getRouter().Db.GetSupportedProfile(profileName);
+            var point1 = router.TryResolve(profile, from, 50);
+            var point2 = router.TryResolve(profile, to, 50);
+            
+            return router.Calculate(profile, point1.Value, point2.Value);
         }
     }
 }
