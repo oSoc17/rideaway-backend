@@ -1,3 +1,4 @@
-dotnet build ./src
-dotnet run
+cd ./src
+dotnet build 
+dotnet run 
 
