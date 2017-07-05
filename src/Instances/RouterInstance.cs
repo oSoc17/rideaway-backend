@@ -1,5 +1,9 @@
 using Itinero;
+using Itinero.LocalGeo;
+using Itinero.Profiles;
+using Itinero.Navigation;
 using System.IO;
+using rideaway_backend.Exceptions;
 
 namespace rideaway_backend.Instance
 {
@@ -20,6 +24,20 @@ namespace rideaway_backend.Instance
 
         public static Router getRouter(){
             return router;
+        }
+
+        public static Route Calculate(string profileName, Coordinate from, Coordinate to){
+            Profile profile = RouterInstance.getRouter().Db.GetSupportedProfile(profileName);
+            var point1 = router.TryResolve(profile, from, 50);
+            if (point1.IsError){
+                throw new ResolveException("Location 1 could not be resolved");
+            }
+            var point2 = router.TryResolve(profile, to, 50);
+            if (point2.IsError){
+                throw new ResolveException("Location 2 could not be resolved");
+            }
+            
+            return router.Calculate(profile, point1.Value, point2.Value);
         }
     }
 }

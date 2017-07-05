@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Itinero.LocalGeo;
+using Itinero.Profiles;
+using Itinero;
 using rideaway_backend.Exceptions;
+using rideaway_backend.Instance;
 
 namespace rideaway_backend.Controllers
 {
@@ -13,11 +16,20 @@ namespace rideaway_backend.Controllers
     {
         // GET api/values
         [HttpGet]
-        public Coordinate Get(string loc1, string loc2)
+        public ActionResult Get(string loc1, string loc2)
         {
-            Coordinate from = ParseCoordinate(loc1);
-            Coordinate to = ParseCoordinate(loc2);
-            return from;
+            try{
+                Coordinate from = ParseCoordinate(loc1);
+                Coordinate to = ParseCoordinate(loc2);
+                Route route = RouterInstance.Calculate("car", from, to);
+                return new JsonResult(route.ToGeoJson());
+            }
+            catch(ResolveException re){
+                return NotFound(re.Message);
+            }
+            catch(Exception e){
+                return BadRequest(e.Message);
+            }
         }
 
         public Coordinate ParseCoordinate(string coord){
