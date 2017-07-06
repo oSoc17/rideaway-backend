@@ -16,12 +16,12 @@ namespace rideaway_backend.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult Get(string loc1, string loc2)
+        public ActionResult Get(string loc1, string loc2, string profile = "networks")
         {
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
-                Route route = RouterInstance.Calculate("networks", from, to);
+                Route route = RouterInstance.Calculate(profile, from, to);
                 return new JsonResult(route.ToGeoJson());
             }
             catch(ResolveException re){

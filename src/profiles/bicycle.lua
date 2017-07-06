@@ -247,7 +247,7 @@ function factor_and_speed_networks (attributes, result)
 	end
 
 	if attributes.cyclenetwork then
-		result.factor = result.factor / 5
+		result.factor = result.factor / 30
 	end
 
 end
