@@ -52,7 +52,7 @@ profile_whitelist = {
 	"roundabout",
 	"cycleway", 
 	"cyclenetwork",
-	"oneway:bicycle"
+	"oneway:bicycle",
 }
 
 meta_whitelist = {
@@ -81,6 +81,11 @@ profiles = {
 		name = "networks",
 		function_name = "factor_and_speed_networks",
 		metric = "custom"
+	},
+	{ 
+		name = "brussels",
+		function_name = "factor_and_speed_networks_brussels",
+		metric = "custom"
 	}
 }
 
@@ -91,6 +96,11 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep = {
 			cyclenetwork = "yes"
 		}
+		if attributes.network == "lcn" then
+			result.attributes_to_keep = {
+				lcn = "yes"
+			}
+		end
 	end
 end
 
@@ -247,9 +257,20 @@ function factor_and_speed_networks (attributes, result)
 	end
 
 	if attributes.cyclenetwork then
-		result.factor = result.factor / 30
+		result.factor = result.factor / 5
 	end
 
+end
+
+function factor_and_speed_networks_brussels (attributes, result)
+	factor_and_speed_balanced(attributes, result)
+	if result.speed == 0 then
+		return
+	end
+
+	if attributes.lcn then
+		result.factor = result.factor / 10
+	end
 end
 
 -- instruction generators
