@@ -21,7 +21,7 @@ namespace rideaway_backend.Controllers
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
-                Route route = RouterInstance.Calculate("car", from, to);
+                Route route = RouterInstance.Calculate("networks", from, to);
                 return new JsonResult(route.ToGeoJson());
             }
             catch(ResolveException re){
