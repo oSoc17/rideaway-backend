@@ -52,6 +52,7 @@ profile_whitelist = {
 	"roundabout",
 	"cycleway", 
 	"cyclenetwork",
+	"lcn",
 	"oneway:bicycle",
 }
 
@@ -93,14 +94,17 @@ profiles = {
 function relation_tag_processor (attributes, result)
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
-		result.attributes_to_keep = {
-			cyclenetwork = "yes"
-		}
 		if attributes.network == "lcn" then
 			result.attributes_to_keep = {
+				cyclenetwork = "yes",
 				lcn = "yes"
 			}
+		else
+			result.attributes_to_keep = {
+				cyclenetwork = "yes"
+			}
 		end
+		
 	end
 end
 
@@ -269,7 +273,7 @@ function factor_and_speed_networks_brussels (attributes, result)
 	end
 
 	if attributes.lcn then
-		result.factor = result.factor / 10
+		result.factor = result.factor / 100
 	end
 end
 
