@@ -1,4 +1,4 @@
-# rideaway-backend(v 0.1.0)
+# rideaway-backend(v 0.2.0)
 
 Backend for rideaway: a bicycle navigation application
 
@@ -16,3 +16,6 @@ Launch a `GET` request to `hostname/route`
 	- `balanced`: tries to select calmer streets
 	- `shortest`: the shortest route, but maybe not the most pleasant one.
 
+### Get a geoJSON with all the routes of the GFR network
+
+Launch a get request to `hostname/routes/GFR.json`
