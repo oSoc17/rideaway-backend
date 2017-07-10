@@ -19,9 +19,6 @@ namespace rideaway_backend.Instance
             {
                 routerDb = RouterDb.Deserialize(stream);
             }
-            //TODO load bicycle profile
-            var vehicle = DynamicVehicle.LoadFromStream(File.OpenRead("profiles/bicycle.lua"));
-            routerDb.AddSupportedVehicle(vehicle);
             router = new Router(routerDb);
         }
 
