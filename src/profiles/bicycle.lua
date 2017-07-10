@@ -53,13 +53,18 @@ profile_whitelist = {
 	"cycleway", 
 	"cyclenetwork",
 	"lcn",
+	"rcn",
+	"brussels",
 	"oneway:bicycle",
+	"operator"	
 }
 
 meta_whitelist = {
 	"name",
 	"bridge",
-	"tunnel"
+	"tunnel",
+	"ref",
+	"color"
 }
 
 profiles = {
@@ -92,19 +97,29 @@ profiles = {
 
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
+	result.attributes_to_keep = {}
+	if attributes.color != nil then
+		result.attributes_to_keep.color = attributes.color
+	end
+	if attributes.ref != nil then
+		result.attributes_to_keep.ref = attributes.ref
+	end
+	if attributes.lcn != nil then
+		result.attributes_to_keep.lcn = attributes.lcn
+	end
+	if attributes.rcn != nil then
+		result.attributes_to_keep.rcn = attributes.rcn
+	end
+	if attributes.operator != nil then
+		result.attributes_to_keep.operator = attributes.operator
+	end
+	if (attributes.network == "lcn" or attributes.network == "rcn") and
+		attributes.operator == "brussels mobility" then
+		result.attributes_to_keep.brussels = "yes"
+	end
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
-		if attributes.network == "lcn" then
-			result.attributes_to_keep = {
-				lcn = "yes",
-				cyclenetwork = "yes"				
-			}
-		else
-			result.attributes_to_keep = {
-				cyclenetwork = "yes"
-			}
-		end
-		
+		result.attributes_to_keep.cyclenetwork = "yes"		
 	end
 end
 
@@ -272,8 +287,8 @@ function factor_and_speed_networks_brussels (attributes, result)
 		return
 	end
 
-	if attributes.lcn then
-		result.factor = result.factor / 100
+	if attributes.brussels then
+		result.factor = result.factor / 30
 	end
 end
 
