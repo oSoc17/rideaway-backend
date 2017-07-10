@@ -206,3 +206,4 @@ $RECYCLE.BIN/
 # Ignore map data files
 *.routerdb
 *.osm.pbf
+*.osm.pbf.1
