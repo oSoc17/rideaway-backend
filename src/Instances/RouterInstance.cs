@@ -5,6 +5,7 @@ using Itinero.Navigation;
 using System.IO;
 using rideaway_backend.Exceptions;
 using System;
+using rideaway_backend.FileMonitoring;
 
 namespace rideaway_backend.Instance
 {
@@ -12,6 +13,7 @@ namespace rideaway_backend.Instance
     {
         private static Router router;
         private static RouterDb routerDb;
+        private static FilesMonitor<FileInfo> monitor;
 
         public static void initialize(){
             //load data in ram
@@ -20,6 +22,17 @@ namespace rideaway_backend.Instance
                 routerDb = RouterDb.Deserialize(stream);
             }
             router = new Router(routerDb);
+            monitor = new FilesMonitor<FileInfo>((f) =>
+            {
+                using (var stream = new FileInfo(@"mapdata/belgium.routerdb").OpenRead())
+                {
+                    routerDb = RouterDb.Deserialize(stream);
+                }
+                router = new Router(routerDb);
+                return true;
+            }, new FileInfo(@"mapdata/belgium.routerdb"));
+            monitor.Start();
+            monitor.AddFile("mapdata/belgium.routerdb");
         }
 
         public static Router getRouter(){
