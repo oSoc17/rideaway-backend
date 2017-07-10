@@ -52,13 +52,19 @@ profile_whitelist = {
 	"roundabout",
 	"cycleway", 
 	"cyclenetwork",
-	"oneway:bicycle"
+	"lcn",
+	"rcn",
+	"brussels",
+	"oneway:bicycle",
+	"operator"	
 }
 
 meta_whitelist = {
 	"name",
 	"bridge",
-	"tunnel"
+	"tunnel",
+	"ref",
+	"color"
 }
 
 profiles = {
@@ -81,16 +87,39 @@ profiles = {
 		name = "networks",
 		function_name = "factor_and_speed_networks",
 		metric = "custom"
+	},
+	{ 
+		name = "brussels",
+		function_name = "factor_and_speed_networks_brussels",
+		metric = "custom"
 	}
 }
 
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
+	result.attributes_to_keep = {}
+	if attributes.color != nil then
+		result.attributes_to_keep.color = attributes.color
+	end
+	if attributes.ref != nil then
+		result.attributes_to_keep.ref = attributes.ref
+	end
+	if attributes.lcn != nil then
+		result.attributes_to_keep.lcn = attributes.lcn
+	end
+	if attributes.rcn != nil then
+		result.attributes_to_keep.rcn = attributes.rcn
+	end
+	if attributes.operator != nil then
+		result.attributes_to_keep.operator = attributes.operator
+	end
+	if (attributes.network == "lcn" or attributes.network == "rcn") and
+		attributes.operator == "brussels mobility" then
+		result.attributes_to_keep.brussels = "yes"
+	end
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
-		result.attributes_to_keep = {
-			cyclenetwork = "yes"
-		}
+		result.attributes_to_keep.cyclenetwork = "yes"		
 	end
 end
 
@@ -250,6 +279,17 @@ function factor_and_speed_networks (attributes, result)
 		result.factor = result.factor / 30
 	end
 
+end
+
+function factor_and_speed_networks_brussels (attributes, result)
+	factor_and_speed_balanced(attributes, result)
+	if result.speed == 0 then
+		return
+	end
+
+	if attributes.brussels then
+		result.factor = result.factor / 30
+	end
 end
 
 -- instruction generators
