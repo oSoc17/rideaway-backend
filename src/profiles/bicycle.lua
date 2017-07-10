@@ -104,11 +104,11 @@ function relation_tag_processor (attributes, result)
 	if attributes.ref != nil then
 		result.attributes_to_keep.ref = attributes.ref
 	end
-	if attributes.lcn != nil then
-		result.attributes_to_keep.lcn = attributes.lcn
+	if attributes.network != "lcn" then
+		result.attributes_to_keep.lcn = "yes"
 	end
-	if attributes.rcn != nil then
-		result.attributes_to_keep.rcn = attributes.rcn
+	if attributes.network != "rcn" then
+		result.attributes_to_keep.rcn = "yes"
 	end
 	if attributes.operator != nil then
 		result.attributes_to_keep.operator = attributes.operator
