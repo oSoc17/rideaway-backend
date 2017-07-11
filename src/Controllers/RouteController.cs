@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Itinero.LocalGeo;
 using Itinero.Profiles;
 using Itinero;
+using Itinero.Navigation.Instructions;
 using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
 using Microsoft.AspNetCore.Cors;
+
 
 namespace rideaway_backend.Controllers
 {
@@ -18,12 +20,18 @@ namespace rideaway_backend.Controllers
         // GET api/values
         [HttpGet]
         [EnableCors("AllowAnyOrigin")]
-        public ActionResult Get(string loc1, string loc2, string profile = "networks")
+        public ActionResult Get(string loc1, string loc2, string profile = "networks", bool instructions = false)
         {
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
+                if (instructions){
+                    IList<Instruction> ins =  route.GenerateInstructions(Languages.GetLanguage("nl"));
+                    foreach(Instruction inst in ins){
+                        Console.WriteLine(inst.Text);
+                    }
+                }
                 return Content(route.ToGeoJson(), "application/json");
             }
             catch(ResolveException re){
