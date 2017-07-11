@@ -1,4 +1,4 @@
-# rideaway-backend(v 0.2.1)
+# rideaway-backend(v 0.2.2)
 
 Backend for rideaway: a bicycle navigation application
 
