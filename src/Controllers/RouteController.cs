@@ -22,7 +22,7 @@ namespace rideaway_backend.Controllers
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
-                return new JsonResult(route.ToGeoJson());
+                return Content(route.ToGeoJson(), "application/json");
             }
             catch(ResolveException re){
                 return NotFound(re.Message);

@@ -1,4 +1,4 @@
-# rideaway-backend(v 0.2.0)
+# rideaway-backend(v 0.2.1)
 
 Backend for rideaway: a bicycle navigation application
 
@@ -18,4 +18,4 @@ Launch a `GET` request to `hostname/route`
 
 ### Get a geoJSON with all the routes of the GFR network
 
-Launch a get request to `hostname/routes/GFR.json`
+Launch a `GET` request to `hostname/routes/GFR.json`
