@@ -8,6 +8,7 @@ using Itinero.Profiles;
 using Itinero;
 using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
+using Microsoft.AspNetCore.Cors;
 
 namespace rideaway_backend.Controllers
 {
@@ -16,6 +17,7 @@ namespace rideaway_backend.Controllers
     {
         // GET api/values
         [HttpGet]
+        [EnableCors("AllowAnyOrigin")]
         public ActionResult Get(string loc1, string loc2, string profile = "networks")
         {
             try{

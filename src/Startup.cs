@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using rideaway_backend.Instance;
 
 namespace rideaway_backend
@@ -31,6 +33,11 @@ namespace rideaway_backend
         {
             // Add framework services.
             services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                builder => builder.AllowAnyOrigin().AllowAnyHeader().WithMethods("GET"));
+            });
             RouterInstance.initialize();
         }
 
