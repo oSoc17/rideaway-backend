@@ -29,11 +29,7 @@ namespace rideaway_backend.Controllers
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
                 if (instructions){
-                    IList<Instruction> ins =  route.GenerateInstructions(Languages.GetLanguage(lang));
-                    foreach(Instruction inst in ins){
-                        Console.WriteLine(inst.Text);
-                    }
-                    return Json(new RouteResponse(route, ins));
+                    return Json(new RouteResponse(route, route.GenerateInstructions(Languages.GetLanguage(lang))));
                 }
                 return Json(new RouteResponse(route));
             }

@@ -12,10 +12,15 @@ namespace rideaway_backend.Model{
 
         public DirectionEnum Direction {get; set;}
 
+        public RelativeDirection Angle {get; set;}
+
         public InstructionProperties(Instruction Instruction, Instruction Next, Route route){
             this.Instruction = Instruction;
             if(Next != null){
                 this.Direction = route.DirectionToNext(Instruction.Shape);
+                if (Instruction.Type != "start" && Instruction.Type != "stop"){
+                    this.Angle = route.RelativeDirectionAt(Instruction.Shape);
+                }                
                 float distanceNext;
                 float timeNext;
                 float distanceNow;
