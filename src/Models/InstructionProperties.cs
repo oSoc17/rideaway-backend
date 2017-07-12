@@ -6,6 +6,8 @@ namespace rideaway_backend.Model{
     public class InstructionProperties {
         public Instruction Instruction {get; set;}
 
+        public float CurrentDistance {get; set;}
+
         public float DistanceToNext {get;set;}
 
         public string Color {get; set;}
@@ -25,6 +27,10 @@ namespace rideaway_backend.Model{
             string RefTemp;
             meta.Attributes.TryGetValue("ref", out RefTemp);
             this.RouteRef = RefTemp;
+            float time;
+            float dist;
+            route.DistanceAndTimeAt(Instruction.Shape, out dist, out time);
+            this.CurrentDistance = dist;
 
             if(Next != null){
                 this.Direction = route.DirectionToNext(Instruction.Shape);
