@@ -20,9 +20,17 @@ namespace rideaway_backend.Model {
             this.RouteObj = RouteObj;
             Route = JObject.Parse(RouteObj.ToGeoJson());
             Instructions = new List<InstructionProperties>();
+            Instruction Previous = null;
             foreach(Instruction instruction in rawInstructions){
-                Instructions.Add(new InstructionProperties(instruction));
+                if (Previous == null){
+                    Previous = instruction;
+                }
+                else {
+                    Instructions.Add(new InstructionProperties(Previous, instruction, RouteObj));
+                    Previous = instruction;
+                }                
             }
+            Instructions.Add(new InstructionProperties(Previous, null, RouteObj));
         }
     }
 }
