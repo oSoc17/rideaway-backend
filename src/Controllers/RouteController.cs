@@ -10,6 +10,7 @@ using Itinero;
 using Itinero.Navigation.Instructions;
 using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
+using rideaway_backend.Model;
 using Microsoft.AspNetCore.Cors;
 
 
@@ -32,8 +33,9 @@ namespace rideaway_backend.Controllers
                     foreach(Instruction inst in ins){
                         Console.WriteLine(inst.Text);
                     }
+                    return Json(new RouteResponse(route, ins));
                 }
-                return Content(route.ToGeoJson(), "application/json");
+                return Json(new RouteResponse(route));
             }
             catch(ResolveException re){
                 return NotFound(re.Message);
