@@ -410,7 +410,7 @@ function get_turn (route_position, language_reference, instruction)
 		if next then
 			name = next.attributes.name
 			ref = route_position.attributes.ref
-			next_ref = next.ref
+			next_ref = next.attributes.ref
 			cyclenetwork = route_position.attributes.cyclenetwork
 			next_cyclenetwork = next.attributes.cyclenetwork
 		end
