@@ -411,21 +411,39 @@ function get_turn (route_position, language_reference, instruction)
 			name = next.attributes.name
 			ref = route_position.attributes.ref
 			next_ref = next.ref
-			cyclenetwork = route_position.cyclenetwork
-			next_cyclenetwork = next.cyclenetwork
+			cyclenetwork = route_position.attributes.cyclenetwork
+			next_cyclenetwork = next.attributes.cyclenetwork
 		end
 		if cyclenetwork then 
 			if next_cyclenetwork then
-				instruction.text = itinero.format(language_reference.get("Go {0} on the {1} route."), 
-				language_reference.get(relative_direction), next_ref)
+				if next_ref then
+					instruction.text = itinero.format(language_reference.get("Go {0} on the {1} route."), 
+					language_reference.get(relative_direction), next_ref)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0}."), 
+					language_reference.get(relative_direction))
+				end
+				
 			else
-				instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork."), 
-				language_reference.get(relative_direction))
+				if name then
+					instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork on {1}."), 
+					language_reference.get(relative_direction), name)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork."), 
+					language_reference.get(relative_direction))
+				end
+				
 			end
 		else
 			if next_cyclenetwork then
-				instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork on the {1} route."), 
-				language_reference.get(relative_direction), next_ref)
+				if next_ref then
+					instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork on the {1} route."), 
+					language_reference.get(relative_direction), next_ref)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork."), 
+					language_reference.get(relative_direction))
+				end
+				
 			else
 				if name then
 					instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 

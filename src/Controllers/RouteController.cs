@@ -21,14 +21,14 @@ namespace rideaway_backend.Controllers
         // GET api/values
         [HttpGet]
         [EnableCors("AllowAnyOrigin")]
-        public ActionResult Get(string loc1, string loc2, string profile = "networks", bool instructions = false)
+        public ActionResult Get(string loc1, string loc2, string profile = "networks", bool instructions = false, string lang = "en")
         {
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
                 if (instructions){
-                    IList<Instruction> ins =  route.GenerateInstructions(Languages.GetLanguage("nl"));
+                    IList<Instruction> ins =  route.GenerateInstructions(Languages.GetLanguage(lang));
                     foreach(Instruction inst in ins){
                         Console.WriteLine(inst.Text);
                     }
