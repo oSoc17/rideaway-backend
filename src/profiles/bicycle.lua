@@ -403,18 +403,42 @@ function get_turn (route_position, language_reference, instruction)
 	if turn_relevant then
 		local next = route_position.next()
 		local name = nil
+		local ref = nil
+		local next_ref = nil
+		local cyclenetwork = nil
+		local next_cyclenetwork = nil
 		if next then
 			name = next.attributes.name
+			ref = route_position.attributes.ref
+			next_ref = next.ref
+			cyclenetwork = route_position.cyclenetwork
+			next_cyclenetwork = next.cyclenetwork
 		end
-		if name then
-			instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 
-				language_reference.get(relative_direction), name)
-			instruction.shape = route_position.shape
-		else
-			instruction.text = itinero.format(language_reference.get("Go {0}."), 
+		if cyclenetwork then 
+			if next_cyclenetwork then
+				instruction.text = itinero.format(language_reference.get("Go {0} on the {1} route."), 
+				language_reference.get(relative_direction), next_ref)
+			else
+				instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork."), 
 				language_reference.get(relative_direction))
-			instruction.shape = route_position.shape
+			end
+		else
+			if next_cyclenetwork then
+				instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork on the {1} route."), 
+				language_reference.get(relative_direction), next_ref)
+			else
+				if name then
+					instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 
+						language_reference.get(relative_direction), name)
+					instruction.shape = route_position.shape
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0}."), 
+						language_reference.get(relative_direction))
+					instruction.shape = route_position.shape
+				end
+			end
 		end
+		instruction.shape = route_position.shape
 
 		return 1
 	end
