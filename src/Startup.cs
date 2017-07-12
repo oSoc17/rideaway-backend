@@ -48,6 +48,7 @@ namespace rideaway_backend
             loggerFactory.AddDebug();
     
             app.UseMvc();
+            app.UseCors("AllowAnyOrigin");
             app.UseStaticFiles();
         }
     }
