@@ -9,7 +9,7 @@ namespace rideaway_backend.Model {
 
         public JObject Route {get;set;}
 
-        public IList<InstructionProperties> Instructions { get; set; }
+        public GeoJsonFeatureCollection Instructions {get; set;}
 
         public RouteResponse(Route RouteObj){
             this.RouteObj = RouteObj;
@@ -19,18 +19,19 @@ namespace rideaway_backend.Model {
         public RouteResponse(Route RouteObj, IList<Instruction> rawInstructions){
             this.RouteObj = RouteObj;
             Route = JObject.Parse(RouteObj.ToGeoJson());
-            Instructions = new List<InstructionProperties>();
+            IList<InstructionProperties> InstructionProps = new List<InstructionProperties>();
             Instruction Previous = null;
             foreach(Instruction instruction in rawInstructions){
                 if (Previous == null){
                     Previous = instruction;
                 }
                 else {
-                    Instructions.Add(new InstructionProperties(Previous, instruction, RouteObj));
+                    InstructionProps.Add(new InstructionProperties(Previous, instruction, RouteObj));
                     Previous = instruction;
                 }                
             }
-            Instructions.Add(new InstructionProperties(Previous, null, RouteObj));
+            InstructionProps.Add(new InstructionProperties(Previous, null, RouteObj));
+            Instructions = new GeoJsonFeatureCollection(InstructionProps);
         }
     }
 }
