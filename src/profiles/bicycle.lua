@@ -64,7 +64,7 @@ meta_whitelist = {
 	"bridge",
 	"tunnel",
 	"ref",
-	"color"
+	"colour"
 }
 
 profiles = {
@@ -98,8 +98,8 @@ profiles = {
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
 	result.attributes_to_keep = {}
-	if attributes.color != nil then
-		result.attributes_to_keep.color = attributes.color
+	if attributes.colour != nil then
+		result.attributes_to_keep.colour = attributes.colour
 	end
 	if attributes.ref != nil then
 		result.attributes_to_keep.ref = attributes.ref
@@ -114,7 +114,7 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep.operator = attributes.operator
 	end
 	if (attributes.network == "lcn" or attributes.network == "rcn") and
-		attributes.operator == "brussels mobility" then
+		attributes.operator == "Brussel Mobiliteit - Bruxelles Mobilité" then
 		result.attributes_to_keep.brussels = "yes"
 	end
 	if attributes.type == "route" and
