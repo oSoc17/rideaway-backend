@@ -1,6 +1,11 @@
-# rideaway-backend(v 0.3.0)
+# rideaway-backend(v 1.0.0)
 
-Backend for rideaway: a bicycle navigation application
+Backend for rideaway: a bicycle navigation application. Provides a routing endpoint where you can provide two coordinates to get the route between these points. Different routing profiles can be used to get different routing behavior and there is support for route instructions.
+
+## Installation
+
+Make sure you have the .NET Core library installed https://www.microsoft.com/net/core
+Run `build.sh` or `build.bat` to build it and `run.sh` or `run.bat` to run it. The Api will start on http://localhost:5000
 
 ## Api
 
@@ -16,6 +21,9 @@ Launch a `GET` request to `hostname/route`
 	- `balanced`: tries to select calmer streets
 	- `shortest`: the shortest route, but maybe not the most pleasant one.
 	- `brussels`: use the brussels bicycle network as much as possible (not complete)
+- `instructions`: Boolean to specify if you want the API to return route instructions or not.
+- `lang`: specify the language of the instructions (supported: `en` and `nl`).
+
 ### Get a geoJSON with all the routes of the GFR network
 
 Launch a `GET` request to `hostname/routes/GFR.json`
