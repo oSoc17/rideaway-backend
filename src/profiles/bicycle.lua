@@ -64,7 +64,7 @@ meta_whitelist = {
 	"bridge",
 	"tunnel",
 	"ref",
-	"color"
+	"colour"
 }
 
 profiles = {
@@ -98,8 +98,8 @@ profiles = {
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
 	result.attributes_to_keep = {}
-	if attributes.color != nil then
-		result.attributes_to_keep.color = attributes.color
+	if attributes.colour != nil then
+		result.attributes_to_keep.colour = attributes.colour
 	end
 	if attributes.ref != nil then
 		result.attributes_to_keep.ref = attributes.ref
@@ -114,7 +114,7 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep.operator = attributes.operator
 	end
 	if (attributes.network == "lcn" or attributes.network == "rcn") and
-		attributes.operator == "brussels mobility" then
+		attributes.operator == "Brussel Mobiliteit - Bruxelles Mobilité" then
 		result.attributes_to_keep.brussels = "yes"
 	end
 	if attributes.type == "route" and
@@ -276,7 +276,7 @@ function factor_and_speed_networks (attributes, result)
 	end
 
 	if attributes.cyclenetwork then
-		result.factor = result.factor / 30
+		result.factor = result.factor / 3
 	end
 
 end
@@ -288,7 +288,7 @@ function factor_and_speed_networks_brussels (attributes, result)
 	end
 
 	if attributes.brussels then
-		result.factor = result.factor / 30
+		result.factor = result.factor / 3
 	end
 end
 
@@ -403,18 +403,60 @@ function get_turn (route_position, language_reference, instruction)
 	if turn_relevant then
 		local next = route_position.next()
 		local name = nil
+		local ref = nil
+		local next_ref = nil
+		local cyclenetwork = nil
+		local next_cyclenetwork = nil
 		if next then
 			name = next.attributes.name
+			ref = route_position.attributes.ref
+			next_ref = next.attributes.ref
+			cyclenetwork = route_position.attributes.cyclenetwork
+			next_cyclenetwork = next.attributes.cyclenetwork
 		end
-		if name then
-			instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 
-				language_reference.get(relative_direction), name)
-			instruction.shape = route_position.shape
+		if cyclenetwork then 
+			if next_cyclenetwork then
+				if next_ref then
+					instruction.text = itinero.format(language_reference.get("Go {0} on the {1} route."), 
+					language_reference.get(relative_direction), next_ref)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0}."), 
+					language_reference.get(relative_direction))
+				end
+				
+			else
+				if name then
+					instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork on {1}."), 
+					language_reference.get(relative_direction), name)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0} and leave the cyclenetwork."), 
+					language_reference.get(relative_direction))
+				end
+				
+			end
 		else
-			instruction.text = itinero.format(language_reference.get("Go {0}."), 
-				language_reference.get(relative_direction))
-			instruction.shape = route_position.shape
+			if next_cyclenetwork then
+				if next_ref then
+					instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork on the {1} route."), 
+					language_reference.get(relative_direction), next_ref)
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0} and enter the cyclenetwork."), 
+					language_reference.get(relative_direction))
+				end
+				
+			else
+				if name then
+					instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 
+						language_reference.get(relative_direction), name)
+					instruction.shape = route_position.shape
+				else
+					instruction.text = itinero.format(language_reference.get("Go {0}."), 
+						language_reference.get(relative_direction))
+					instruction.shape = route_position.shape
+				end
+			end
 		end
+		instruction.shape = route_position.shape
 
 		return 1
 	end

@@ -39,6 +39,7 @@ namespace rideaway_backend
                 builder => builder.AllowAnyOrigin().AllowAnyHeader().WithMethods("GET"));
             });
             RouterInstance.initialize();
+            Languages.initialize();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

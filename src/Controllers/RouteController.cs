@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
 using Itinero.LocalGeo;
 using Itinero.Profiles;
 using Itinero;
+using Itinero.Navigation.Instructions;
 using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
+using rideaway_backend.Model;
 using Microsoft.AspNetCore.Cors;
+
 
 namespace rideaway_backend.Controllers
 {
@@ -18,13 +22,16 @@ namespace rideaway_backend.Controllers
         // GET api/values
         [HttpGet]
         [EnableCors("AllowAnyOrigin")]
-        public ActionResult Get(string loc1, string loc2, string profile = "networks")
+        public ActionResult Get(string loc1, string loc2, string profile = "networks", bool instructions = false, string lang = "en")
         {
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
-                return Content(route.ToGeoJson(), "application/json");
+                if (instructions){
+                    return Json(new RouteResponse(route, route.GenerateInstructions(Languages.GetLanguage(lang))));
+                }
+                return Json(new RouteResponse(route));
             }
             catch(ResolveException re){
                 return NotFound(re.Message);
