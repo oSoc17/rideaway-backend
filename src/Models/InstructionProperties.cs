@@ -28,9 +28,9 @@ namespace rideaway_backend.Model{
             this.Instruction = Instruction;
             properties.Add("instruction", Instruction.Text);
             Route.Meta meta =  route.ShapeMetaFor(Instruction.Shape);
-            string ColorTemp;
-            meta.Attributes.TryGetValue("color", out ColorTemp);
-            properties.Add("color", ColorTemp);
+            string ColourTemp;
+            meta.Attributes.TryGetValue("colour", out ColourTemp);
+            properties.Add("colour", ColourTemp);
             
             string RefTemp;
             meta.Attributes.TryGetValue("ref", out RefTemp);
