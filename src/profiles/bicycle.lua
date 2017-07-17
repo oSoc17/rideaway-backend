@@ -391,13 +391,13 @@ function get_turn (route_position, language_reference, instruction)
 
 	local current_colour = route_position.attributes.colour
 	local next_colour = nil
-	local cyclenetwork = route_position.attributes.cyclenetwork
+	local cyclenetwork = route_position.attributes.brussels
 	local next_cyclenetwork = nil
 	local next = route_position.next()
 	
 	if next then
 		 next_colour = next.attributes.colour
-		 next_cyclenetwork = next.attributes.cyclenetwork
+		 next_cyclenetwork = next.attributes.brussels
 	end
 	if branches then
 		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour) then
