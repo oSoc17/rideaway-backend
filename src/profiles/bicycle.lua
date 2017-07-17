@@ -288,7 +288,7 @@ function factor_and_speed_networks_brussels (attributes, result)
 	end
 
 	if attributes.brussels then
-		result.factor = result.factor / 3
+		result.factor = result.factor / 5
 	end
 end
 
@@ -406,10 +406,7 @@ function get_turn (route_position, language_reference, instruction)
 		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour or ref ~= next_ref) then
 			turn_relevant = true
 		end
-		if cyclenetwork and !next_cyclenetwork then
-			turn_relevant = true
-		end
-		if !cyclenetwork and next_cyclenetwork then
+		if cyclenetwork ~= next_cyclenetwork then
 			turn_relevant = true
 		end
 	end
