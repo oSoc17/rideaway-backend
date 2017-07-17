@@ -400,7 +400,7 @@ function get_turn (route_position, language_reference, instruction)
 		 next_cyclenetwork = next.attributes.cyclenetwork
 	end
 	if branches then
-		if cyclenetwork and next_cyclenetwork and (colour ~= next_colour) then
+		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour) then
 			turn_relevant = true
 		end
 	end

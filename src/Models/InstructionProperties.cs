@@ -28,6 +28,7 @@ namespace rideaway_backend.Model{
             this.Instruction = Instruction;
             properties.Add("instruction", Instruction.Text);
             Route.Meta meta =  route.ShapeMetaFor(Instruction.Shape);
+           
             string ColourTemp;
             meta.Attributes.TryGetValue("colour", out ColourTemp);
             properties.Add("colour", ColourTemp);
@@ -42,6 +43,12 @@ namespace rideaway_backend.Model{
             properties.Add("distance", dist.ToString(new CultureInfo("en-US")));
 
             if(Next != null){
+                Route.Meta nextMeta = route.ShapeMetaFor(Next.Shape);
+                string nextColour;
+                nextMeta.Attributes.TryGetValue("colour", out nextColour);
+                properties.Add("nextColour", nextColour);                
+
+
                 this.Direction = route.DirectionToNext(Instruction.Shape);
                 properties.Add("direction", Direction.ToString());
                 if (Instruction.Type != "start" && Instruction.Type != "stop"){
