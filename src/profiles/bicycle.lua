@@ -288,7 +288,7 @@ function factor_and_speed_networks_brussels (attributes, result)
 	end
 
 	if attributes.brussels then
-		result.factor = result.factor / 3
+		result.factor = result.factor / 5
 	end
 end
 
@@ -388,31 +388,44 @@ function get_turn (route_position, language_reference, instruction)
 
 	local turn_relevant = false
 	local branches = route_position.branches
+
+	local current_colour = route_position.attributes.colour
+	local ref = route_position.attributes.ref
+	local next_colour = nil
+	local cyclenetwork = route_position.attributes.brussels
+	local next_cyclenetwork = nil
+	local next_ref;
+	local next = route_position.next()
+	
+	if next then
+		 next_colour = next.attributes.colour
+		 next_cyclenetwork = next.attributes.brussels
+		 next_ref = next.attributes.ref
+	end
 	if branches then
-		branches = branches.get_traversable()
-		if relative_direction == "straighton" and
-			branches.count >= 2 then
-			turn_relevant = true -- straight on at cross road
+		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour or ref ~= next_ref) then
+			turn_relevant = true
 		end
-		if  relative_direction != "straighton" and 
-			branches.count > 0 then
-			turn_relevant = true -- an actual normal turn
+		if cyclenetwork ~= next_cyclenetwork then
+			turn_relevant = true
 		end
 	end
+		--branches = branches.get_traversable()
+		--if relative_direction == "straighton" and
+		--	branches.count >= 2 then
+		--	turn_relevant = true -- straight on at cross road
+		--end
+		--if  relative_direction != "straighton" and 
+		--	branches.count > 0 then
+		--	turn_relevant = true -- an actual normal turn
+		--end
+	--end
 
 	if turn_relevant then
-		local next = route_position.next()
 		local name = nil
-		local ref = nil
-		local next_ref = nil
-		local cyclenetwork = nil
-		local next_cyclenetwork = nil
+		
 		if next then
 			name = next.attributes.name
-			ref = route_position.attributes.ref
-			next_ref = next.attributes.ref
-			cyclenetwork = route_position.attributes.cyclenetwork
-			next_cyclenetwork = next.attributes.cyclenetwork
 		end
 		if cyclenetwork then 
 			if next_cyclenetwork then
