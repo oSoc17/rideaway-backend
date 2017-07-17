@@ -46,7 +46,11 @@ namespace rideaway_backend.Model{
                 Route.Meta nextMeta = route.ShapeMetaFor(Next.Shape);
                 string nextColour;
                 nextMeta.Attributes.TryGetValue("colour", out nextColour);
-                properties.Add("nextColour", nextColour);                
+                properties.Add("nextColour", nextColour);
+
+                string nextRef;
+                nextMeta.Attributes.TryGetValue("ref", out nextRef);
+                properties.Add("nexRef", nextRef);               
 
 
                 this.Direction = route.DirectionToNext(Instruction.Shape);
