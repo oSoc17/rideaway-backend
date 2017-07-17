@@ -388,31 +388,42 @@ function get_turn (route_position, language_reference, instruction)
 
 	local turn_relevant = false
 	local branches = route_position.branches
+
+	local current_colour = route_position.attributes.colour
+	local next_colour = nil
+	local cyclenetwork = route_position.attributes.cyclenetwork
+	local next_cyclenetwork = nil
+	local next = route_position.next()
+	
+	if next then
+		 next_colour = next.attributes.colour
+		 next_cyclenetwork = next.attributes.cyclenetwork
+	end
 	if branches then
-		branches = branches.get_traversable()
-		if relative_direction == "straighton" and
-			branches.count >= 2 then
-			turn_relevant = true -- straight on at cross road
-		end
-		if  relative_direction != "straighton" and 
-			branches.count > 0 then
-			turn_relevant = true -- an actual normal turn
+		if cyclenetwork and next_cyclenetwork and (colour ~= next_colour) then
+			turn_relevant = true
 		end
 	end
+		--branches = branches.get_traversable()
+		--if relative_direction == "straighton" and
+		--	branches.count >= 2 then
+		--	turn_relevant = true -- straight on at cross road
+		--end
+		--if  relative_direction != "straighton" and 
+		--	branches.count > 0 then
+		--	turn_relevant = true -- an actual normal turn
+		--end
+	--end
 
 	if turn_relevant then
-		local next = route_position.next()
 		local name = nil
 		local ref = nil
 		local next_ref = nil
-		local cyclenetwork = nil
-		local next_cyclenetwork = nil
+		
 		if next then
 			name = next.attributes.name
 			ref = route_position.attributes.ref
 			next_ref = next.attributes.ref
-			cyclenetwork = route_position.attributes.cyclenetwork
-			next_cyclenetwork = next.attributes.cyclenetwork
 		end
 		if cyclenetwork then 
 			if next_cyclenetwork then
