@@ -98,9 +98,6 @@ profiles = {
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
 	result.attributes_to_keep = {}
-	if attributes.colour != nil then
-		result.attributes_to_keep.colour = attributes.colour
-	end
 	if attributes.ref != nil then
 		result.attributes_to_keep.ref = attributes.ref
 	end
@@ -114,8 +111,11 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep.operator = attributes.operator
 	end
 	if (attributes.network == "lcn" or attributes.network == "rcn") and
-		attributes.operator == "Brussel Mobiliteit - Bruxelles Mobilité" then
+		attributes.operator == "Brussels Mobility" then
 		result.attributes_to_keep.brussels = "yes"
+	end
+	if attributes.colour != nil and result.attributes_to_keep.brussels then
+		result.attributes_to_keep.colour = attributes.colour
 	end
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
