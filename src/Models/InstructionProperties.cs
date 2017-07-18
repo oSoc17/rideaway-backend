@@ -50,14 +50,14 @@ namespace rideaway_backend.Model{
 
                 string nextRef;
                 nextMeta.Attributes.TryGetValue("ref", out nextRef);
-                properties.Add("nexRef", nextRef);               
+                properties.Add("nextRef", nextRef);               
 
 
                 this.Direction = route.DirectionToNext(Instruction.Shape);
                 properties.Add("direction", Direction.ToString());
                 if (Instruction.Type != "start" && Instruction.Type != "stop"){
                     this.Angle = route.RelativeDirectionAt(Instruction.Shape);
-                    properties.Add("angle", Angle.Angle.ToString(new CultureInfo("en-US")));
+                    properties.Add("angle", Angle.Direction.ToString());
                 }                
                 float distanceNext;
                 float timeNext;

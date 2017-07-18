@@ -406,9 +406,9 @@ function get_turn (route_position, language_reference, instruction)
 		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour or ref ~= next_ref) then
 			turn_relevant = true
 		end
-		if cyclenetwork ~= next_cyclenetwork then
-			turn_relevant = true
-		end
+		--if cyclenetwork ~= next_cyclenetwork then
+		--	turn_relevant = true
+		--end
 	end
 		--branches = branches.get_traversable()
 		--if relative_direction == "straighton" and
