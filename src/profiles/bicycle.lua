@@ -111,7 +111,7 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep.operator = attributes.operator
 	end
 	if (attributes.network == "lcn" or attributes.network == "rcn") and
-		attributes.operator == "Brussel Mobiliteit - Bruxelles Mobilité" then
+		attributes.operator == "Brussels Mobility" then
 		result.attributes_to_keep.brussels = "yes"
 	end
 	if attributes.colour != nil and result.attributes_to_keep.brussels then
