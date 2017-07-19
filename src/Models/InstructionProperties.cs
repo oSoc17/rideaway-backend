@@ -41,6 +41,8 @@ namespace rideaway_backend.Model{
             route.DistanceAndTimeAt(Instruction.Shape, out dist, out time);
             properties.Add("distance", dist.ToString(new CultureInfo("en-US")));
 
+            properties.Add("type", Instruction.Type);
+
             if(Next != null){
                 Route.Meta nextMeta = route.ShapeMetaFor(Next.Shape);
                 string nextColour;
