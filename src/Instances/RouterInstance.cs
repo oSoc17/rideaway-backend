@@ -42,25 +42,29 @@ namespace rideaway_backend.Instance
         public static Route Calculate(string profileName, Coordinate from, Coordinate to){
             Vehicle vehicle = RouterInstance.getRouter().Db.GetSupportedVehicle("bicycle");
             int dist = 50;
-            var point1 = router.TryResolve(vehicle.Profile(profileName), from, dist);
+            var point1 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
             while(point1.IsError && dist < 1600){
                 dist *= 2;
-                point1 = router.TryResolve(vehicle.Profile(profileName), from, dist);
+                point1 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
             }
             if (point1.IsError){
                 throw new ResolveException("Location 1 could not be resolved");
             }
             dist = 50;
-            var point2 = router.TryResolve(vehicle.Profile(profileName), to, dist);
+            var point2 = router.TryResolveConnected(vehicle.Profile(profileName), to, dist, dist);
             while(point2.IsError && dist < 1600){
                 dist *= 2;
-                point2 = router.TryResolve(vehicle.Profile(profileName), from, dist);
+                point2 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
             }
             if (point2.IsError){
                 throw new ResolveException("Location 2 could not be resolved");
             }
+            var result = router.TryCalculate(vehicle.Profile(profileName), point1.Value, point2.Value);
+            if (result.IsError){
+                throw new ResolveException("No path found between locations");
+            }
             
-            return router.Calculate(vehicle.Profile(profileName), point1.Value, point2.Value);
+            return result.Value;
         }
     }
 }
