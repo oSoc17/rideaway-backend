@@ -23,8 +23,7 @@ namespace rideaway_backend.Model{
             this.type = "Feature";
             this.properties = new Dictionary<string, string>();
             this.geometry =  new GeoJsonPoint(route.Shape[Instruction.Shape]);
-            //this.geometry =  new GeoJsonPoint((Coordinate)route.Shape.GetValue(Instruction.Shape));
-            //this.geometry = new GeoJsonPoint(route.Branches[Instruction.Shape].Coordinate);
+
             this.Instruction = Instruction;
             properties.Add("instruction", Instruction.Text);
             Route.Meta meta =  route.ShapeMetaFor(Instruction.Shape);
