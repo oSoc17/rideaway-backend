@@ -32,6 +32,7 @@ namespace rideaway_backend.Model{
            
             properties.Add("colour", Instruction.GetAttribute("colour", route));           
             properties.Add("ref", Instruction.GetAttribute("ref", route));
+            properties.Add("shape", "" + Instruction.Shape);
             
             float time;
             float dist;
