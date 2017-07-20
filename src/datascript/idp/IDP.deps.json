@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1/ubuntu.16.04-x64",
-    "signature": "df6ba4eda1c2606090cb91ca67f3b87c8464711d"
+    "signature": "a3ff462e902a04faf80b91aaa098039665d20fec"
   },
   "compilationOptions": {},
   "targets": {
@@ -10,8 +10,8 @@
       "idp/1.0.0": {
         "dependencies": {
           "GTFS": "2.1.4-alpha",
-          "Itinero": "0.40.5-rc1",
-          "Itinero.IO.Osm": "0.40.5-rc1",
+          "Itinero": "1.2.0-pre04",
+          "Itinero.IO.Osm": "1.2.0-pre05",
           "Itinero.Transit": "0.3.4-alpha",
           "Microsoft.NETCore.App": "1.1.1",
           "Serilog": "2.3.0",
@@ -30,7 +30,7 @@
           "lib/netstandard1.3/GTFS.dll": {}
         }
       },
-      "itinero/0.40.5-rc1": {
+      "itinero/1.2.0-pre04": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "Reminiscence": "1.0.5",
@@ -42,10 +42,10 @@
           "lib/netstandard1.3/Itinero.dll": {}
         }
       },
-      "itinero.io.osm/0.40.5-rc1": {
+      "itinero.io.osm/1.2.0-pre05": {
         "dependencies": {
-          "Itinero": "0.40.5-rc1",
-          "OsmSharp": "5.0.6"
+          "Itinero": "1.2.0-pre04",
+          "OsmSharp": "5.0.7"
         },
         "runtime": {
           "lib/netstandard1.6/Itinero.IO.Osm.dll": {}
@@ -54,7 +54,7 @@
       "itinero.transit/0.3.4-alpha": {
         "dependencies": {
           "GTFS": "2.1.4-alpha",
-          "Itinero": "0.40.5-rc1",
+          "Itinero": "1.2.0-pre04",
           "NETStandard.Library": "1.6.1",
           "System.Reflection": "4.3.0",
           "System.Reflection.TypeExtensions": "4.3.0",
@@ -350,7 +350,7 @@
           "System.Xml.XDocument": "4.3.0"
         }
       },
-      "osmsharp/5.0.6": {
+      "osmsharp/5.0.7": {
         "dependencies": {
           "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
           "NETStandard.Library": "1.6.1",
@@ -2023,19 +2023,19 @@
       "path": "gtfs/2.1.4-alpha",
       "hashPath": "gtfs.2.1.4-alpha.nupkg.sha512"
     },
-    "itinero/0.40.5-rc1": {
+    "itinero/1.2.0-pre04": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Wm2/U+T5CIZAWpb1IgXpWWGhrpOq+Dj9YfOJ5nvtauN4zsYfbXXI5rgiNVjmKrfeWGSGAma3Dve6i0Xj2emj8A==",
-      "path": "itinero/0.40.5-rc1",
-      "hashPath": "itinero.0.40.5-rc1.nupkg.sha512"
+      "sha512": "sha512-g5ZJwjH3hV06JvtdkxOfl7KFsbROU5k1/WMqoZBhDgAYZ/StAz3wj9guuNeH6zMc0qBvr2et2gqJ34mkdYHR1A==",
+      "path": "itinero/1.2.0-pre04",
+      "hashPath": "itinero.1.2.0-pre04.nupkg.sha512"
     },
-    "itinero.io.osm/0.40.5-rc1": {
+    "itinero.io.osm/1.2.0-pre05": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0QtAaX/AAUFajsVUnXPLzlL0PisUyE7DeczLEY7XAUHCQeCZGvqJUTRbiSVx5vdb///xCHnfr4Sv6i0vsyVP4Q==",
-      "path": "itinero.io.osm/0.40.5-rc1",
-      "hashPath": "itinero.io.osm.0.40.5-rc1.nupkg.sha512"
+      "sha512": "sha512-BLTdhRb1Iq8hqgRUQoaQMotW7HAFl4ooRwUh17oYungVVYkW3zycaapo+OYfOnju1UmPPYTFcWAicQeLYUKWbw==",
+      "path": "itinero.io.osm/1.2.0-pre05",
+      "hashPath": "itinero.io.osm.1.2.0-pre05.nupkg.sha512"
     },
     "itinero.transit/0.3.4-alpha": {
       "type": "package",
@@ -2191,12 +2191,12 @@
       "path": "netstandard.library/1.6.1",
       "hashPath": "netstandard.library.1.6.1.nupkg.sha512"
     },
-    "osmsharp/5.0.6": {
+    "osmsharp/5.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jGOuKEInoRgI1jsPnNCzDJCOzAqwmqUBsQhGf7oJZm3H+4R8rEUS3+mA4qUf2gb0qNs/Esb4jM1+c3bXWZajhA==",
-      "path": "osmsharp/5.0.6",
-      "hashPath": "osmsharp.5.0.6.nupkg.sha512"
+      "sha512": "sha512-aVOfdlh9CUFHyMVcZppQECiGPvs/TiCEWua71XdGdiQ2pYIjH9UADdIzkyuas7698Jt8AWNC51+3i/Jx7d3aaQ==",
+      "path": "osmsharp/5.0.7",
+      "hashPath": "osmsharp.5.0.7.nupkg.sha512"
     },
     "protobuf-net/2.1.0": {
       "type": "package",

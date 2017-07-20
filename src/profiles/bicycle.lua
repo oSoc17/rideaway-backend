@@ -2,8 +2,8 @@
 name = "bicycle"
 vehicle_types = { "vehicle", "bicycle" }
 
-minspeed = 15
-maxspeed = 15
+minspeed = 13
+maxspeed = 13
 
 speed_profile = {
 	["primary"] = { speed = 15, access = true },
@@ -98,9 +98,6 @@ profiles = {
 -- processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
 	result.attributes_to_keep = {}
-	if attributes.ref != nil then
-		result.attributes_to_keep.ref = attributes.ref
-	end
 	if attributes.network == "lcn" then
 		result.attributes_to_keep.lcn = "yes"
 	end
@@ -114,8 +111,11 @@ function relation_tag_processor (attributes, result)
 		attributes.operator == "Brussels Mobility" then
 		result.attributes_to_keep.brussels = "yes"
 	end
-	if attributes.colour != nil and result.attributes_to_keep.brussels then
+	if attributes.colour != nil and result.attributes_to_keep.brussels == "yes" then
 		result.attributes_to_keep.colour = attributes.colour
+	end
+	if attributes.ref != nil and result.attributes_to_keep.brussels == "yes" then
+		result.attributes_to_keep.ref = attributes.ref
 	end
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
@@ -402,23 +402,27 @@ function get_turn (route_position, language_reference, instruction)
 		 next_cyclenetwork = next.attributes.brussels
 		 next_ref = next.attributes.ref
 	end
-	if branches then
-		if cyclenetwork and next_cyclenetwork and (current_colour ~= next_colour or ref ~= next_ref) then
-			turn_relevant = true
-		end
-		--if cyclenetwork ~= next_cyclenetwork then
-		--	turn_relevant = true
+	if branches and cyclenetwork and next_cyclenetwork and ref ~= next_ref then
+		turn_relevant = true
+		--for ref_part in string.gmatch(ref, '([^,]+)') do
+		--	for next_ref_part in string.gmatch(next_ref, '([^,]+)') do
+		--		if ref_part == next_ref_part then
+		--			turn_relevant = false
+		--		end
+		--	end
 		--end
 	end
-		--branches = branches.get_traversable()
-		--if relative_direction == "straighton" and
-		--	branches.count >= 2 then
-		--	turn_relevant = true -- straight on at cross road
-		--end
-		--if  relative_direction != "straighton" and 
-		--	branches.count > 0 then
-		--	turn_relevant = true -- an actual normal turn
-		--end
+	if branches then
+		if cyclenetwork and not next_cyclenetwork then
+			turn_relevant = true
+		elseif not cyclenetwork and next_cyclenetwork then
+			turn_relevant = true
+		end	
+	end
+	--if branches then
+	--	if cyclenetwork and next_cyclenetwork and (ref ~= next_ref) then
+	--		turn_relevant = true
+	--	end
 	--end
 
 	if turn_relevant then
@@ -474,4 +478,4 @@ function get_turn (route_position, language_reference, instruction)
 		return 1
 	end
 	return 0
-end
+end	

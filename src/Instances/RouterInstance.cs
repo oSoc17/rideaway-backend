@@ -59,8 +59,12 @@ namespace rideaway_backend.Instance
             if (point2.IsError){
                 throw new ResolveException("Location 2 could not be resolved");
             }
+            var result = router.TryCalculate(vehicle.Profile(profileName), point1.Value, point2.Value);
+            if (result.IsError){
+                throw new ResolveException("No path found between locations");
+            }
             
-            return router.Calculate(vehicle.Profile(profileName), point1.Value, point2.Value);
+            return result.Value;
         }
     }
 }

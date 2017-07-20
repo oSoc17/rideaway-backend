@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Itinero;
 using System.Globalization;
 using Itinero.LocalGeo;
+using rideaway_backend.Extensions;
 
 namespace rideaway_backend.Model{
     public class InstructionProperties {
@@ -23,35 +24,26 @@ namespace rideaway_backend.Model{
             this.type = "Feature";
             this.properties = new Dictionary<string, string>();
             this.geometry =  new GeoJsonPoint(route.Shape[Instruction.Shape]);
-            //this.geometry =  new GeoJsonPoint((Coordinate)route.Shape.GetValue(Instruction.Shape));
-            //this.geometry = new GeoJsonPoint(route.Branches[Instruction.Shape].Coordinate);
             this.Instruction = Instruction;
+            //Coordinate next = route.Shape[Instruction.Shape];
+            
             properties.Add("instruction", Instruction.Text);
             Route.Meta meta =  route.ShapeMetaFor(Instruction.Shape);
            
-            string ColourTemp;
-            meta.Attributes.TryGetValue("colour", out ColourTemp);
-            properties.Add("colour", ColourTemp);
-            
-            string RefTemp;
-            meta.Attributes.TryGetValue("ref", out RefTemp);
-            properties.Add("ref", RefTemp);
+            properties.Add("colour", Instruction.GetAttribute("colour", route));           
+            properties.Add("ref", Instruction.GetAttribute("ref", route));
             
             float time;
             float dist;
             route.DistanceAndTimeAt(Instruction.Shape, out dist, out time);
             properties.Add("distance", dist.ToString(new CultureInfo("en-US")));
 
+            properties.Add("type", Instruction.Type);
+
             if(Next != null){
                 Route.Meta nextMeta = route.ShapeMetaFor(Next.Shape);
-                string nextColour;
-                nextMeta.Attributes.TryGetValue("colour", out nextColour);
-                properties.Add("nextColour", nextColour);
-
-                string nextRef;
-                nextMeta.Attributes.TryGetValue("ref", out nextRef);
-                properties.Add("nextRef", nextRef);               
-
+                properties.Add("nextColour", Next.GetAttribute("colour", route));
+                properties.Add("nextRef", Next.GetAttribute("ref", route));    
 
                 this.Direction = route.DirectionToNext(Instruction.Shape);
                 properties.Add("direction", Direction.ToString());
