@@ -22,13 +22,13 @@ namespace rideaway_backend.Controllers
         // GET api/values
         [HttpGet]
         [EnableCors("AllowAnyOrigin")]
-        public ActionResult Get(string loc1, string loc2, string profile = "networks", bool instructions = false, string lang = "en")
+        public ActionResult Get(string loc1, string loc2, string profile = "brussels", bool instructions = false, string lang = "en")
         {
             try{
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
-                if (instructions){
+                if (instructions && profile == "brussels"){
                     return Json(new RouteResponse(route, route.GenerateInstructions(Languages.GetLanguage(lang))));
                 }
                 return Json(new RouteResponse(route));
