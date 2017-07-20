@@ -20,9 +20,10 @@ namespace rideaway_backend.Model {
 
         public RouteResponse(Route RouteObj, IList<Instruction> rawInstructions){
             this.RouteObj = RouteObj;
-            Route = JObject.Parse(RouteObj.ToGeoJson());
+            
             IList<InstructionProperties> InstructionProps = new List<InstructionProperties>();
             IList<Instruction> simplified = SimplifyInstructions(rawInstructions, RouteObj);
+            correctColours(RouteObj, simplified);
             Instruction Previous = null;
             foreach(Instruction instruction in simplified){
                 if (Previous == null){
@@ -35,6 +36,7 @@ namespace rideaway_backend.Model {
             }
             InstructionProps.Add(new InstructionProperties(Previous, null, RouteObj));
             Instructions = new GeoJsonFeatureCollection(InstructionProps);
+            Route = JObject.Parse(RouteObj.ToGeoJson());
         }
         
         public IList<Instruction> SimplifyInstructions(IList<Instruction> instructions, Route Route){
@@ -78,6 +80,23 @@ namespace rideaway_backend.Model {
             }            
 
             return simplified;
+        }
+
+        public void correctColours(Route route, IList<Instruction> instructions){
+            int instructionIndex = 0;
+            Instruction currentInstruction = instructions[instructionIndex + 1];
+            
+            for(var i = 0; i < route.ShapeMeta.Length; i++){
+                int currentShape = route.ShapeMeta[i].Shape;
+                if(currentShape == currentInstruction.Shape){
+                    instructionIndex++;
+                    if(instructionIndex < instructions.Count - 1){
+                        currentInstruction = instructions[instructionIndex + 1];
+                    }
+                }
+                route.ShapeMeta[i].Attributes.AddOrReplace("colour", currentInstruction.GetAttribute("colour", route));
+
+            }
         } 
     }
 
