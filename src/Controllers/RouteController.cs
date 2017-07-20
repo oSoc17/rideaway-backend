@@ -28,10 +28,12 @@ namespace rideaway_backend.Controllers
                 Coordinate from = ParseCoordinate(loc1);
                 Coordinate to = ParseCoordinate(loc2);
                 Route route = RouterInstance.Calculate(profile, from, to);
-                if (instructions && profile == "brussels"){
-                    return Json(new RouteResponse(route, route.GenerateInstructions(Languages.GetLanguage(lang))));
+  
+                if (profile == "brussels"){
+                    return Json(new RouteResponse(route, true, instructions, lang));
                 }
-                return Json(new RouteResponse(route));
+                return Json(new RouteResponse(route, false, instructions, lang));
+                
             }
             catch(ResolveException re){
                 return NotFound(re.Message);
