@@ -8,5 +8,9 @@ namespace rideaway_backend.Extensions {
             route.ShapeMetaFor(instruction.Shape).Attributes.TryGetValue("key", out value);
             return value;
         }
+
+        public static void SetAttribute(this Instruction instruction, string key, string value, Route route){
+            route.ShapeMetaFor(instruction.Shape).Attributes.AddOrReplace(key, value);
+        }
     }
 }

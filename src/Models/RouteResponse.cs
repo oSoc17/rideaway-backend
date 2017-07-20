@@ -21,8 +21,9 @@ namespace rideaway_backend.Model {
             this.RouteObj = RouteObj;
             Route = JObject.Parse(RouteObj.ToGeoJson());
             IList<InstructionProperties> InstructionProps = new List<InstructionProperties>();
+            IList<Instruction> simplified = SimplifyInstructions(rawInstructions, RouteObj);
             Instruction Previous = null;
-            foreach(Instruction instruction in rawInstructions){
+            foreach(Instruction instruction in simplified){
                 if (Previous == null){
                     Previous = instruction;
                 }
@@ -38,11 +39,34 @@ namespace rideaway_backend.Model {
         public IList<Instruction> SimplifyInstructions(IList<Instruction> instructions, Route Route){
             IList<Instruction> simplified = new List<Instruction>();
             string currentRef = null;
+            Instruction Previous = null;
             foreach(Instruction ins in instructions){
-                if (currentRef == null){
-                    currentRef = ins.GetAttribute("nextRef", Route);
+                if (Previous == null){
+                    Previous = ins;
+                    simplified.Add(ins);
                 }
-
+                else {
+                    if (currentRef == null){
+                        string refs = ins.GetAttribute("ref", Route);
+                        currentRef = refs.Split(',')[0];
+                        ins.SetAttribute("ref", currentRef, Route);
+                        string colours = ins.GetAttribute("colour", Route);
+                        string currentColour = colours.Split(',')[0];
+                        ins.SetAttribute("colour", currentColour, Route);
+                        simplified.Add(ins);
+                    }
+                    else {
+                        string refs = ins.GetAttribute("ref", Route);
+                        if (!refs.Contains(currentRef)){
+                            currentRef = refs.Split(',')[0];
+                            ins.SetAttribute("ref", currentRef, Route);
+                            string colours = ins.GetAttribute("colour", Route);
+                            string currentColour = colours.Split(',')[0];
+                            ins.SetAttribute("colour", currentColour, Route);
+                            simplified.Add(ins);
+                        }
+                    }
+                }       
             }
 
             return simplified;
