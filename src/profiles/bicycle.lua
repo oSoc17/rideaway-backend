@@ -412,6 +412,13 @@ function get_turn (route_position, language_reference, instruction)
 		--	end
 		--end
 	end
+	if branches then
+		if cyclenetwork and not next_cyclenetwork then
+			turn_relevant = true
+		elseif not cyclenetwork and next_cyclenetwork then
+			turn_relevant = true
+		end	
+	end
 	--if branches then
 	--	if cyclenetwork and next_cyclenetwork and (ref ~= next_ref) then
 	--		turn_relevant = true
