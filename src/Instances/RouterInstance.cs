@@ -42,19 +42,19 @@ namespace rideaway_backend.Instance
         public static Route Calculate(string profileName, Coordinate from, Coordinate to){
             Vehicle vehicle = RouterInstance.getRouter().Db.GetSupportedVehicle("bicycle");
             int dist = 50;
-            var point1 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
+            var point1 = router.TryResolve(vehicle.Profile(profileName), from, dist);
             while(point1.IsError && dist < 1600){
                 dist *= 2;
-                point1 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
+                point1 = router.TryResolve(vehicle.Profile(profileName), from, dist);
             }
             if (point1.IsError){
                 throw new ResolveException("Location 1 could not be resolved");
             }
             dist = 50;
-            var point2 = router.TryResolveConnected(vehicle.Profile(profileName), to, dist, dist);
+            var point2 = router.TryResolve(vehicle.Profile(profileName), to, dist);
             while(point2.IsError && dist < 1600){
                 dist *= 2;
-                point2 = router.TryResolveConnected(vehicle.Profile(profileName), from, dist, dist);
+                point2 = router.TryResolve(vehicle.Profile(profileName), from, dist);
             }
             if (point2.IsError){
                 throw new ResolveException("Location 2 could not be resolved");
