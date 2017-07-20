@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Itinero.Navigation.Instructions;
 using Newtonsoft.Json.Linq;
 using Itinero;
+using rideaway_backend.Extensions;
 
 namespace rideaway_backend.Model {
     public class RouteResponse {
@@ -33,5 +34,20 @@ namespace rideaway_backend.Model {
             InstructionProps.Add(new InstructionProperties(Previous, null, RouteObj));
             Instructions = new GeoJsonFeatureCollection(InstructionProps);
         }
+        
+        public IList<Instruction> SimplifyInstructions(IList<Instruction> instructions, Route Route){
+            IList<Instruction> simplified = new List<Instruction>();
+            string currentRef = null;
+            foreach(Instruction ins in instructions){
+                if (currentRef == null){
+                    currentRef = ins.GetAttribute("nextRef", Route);
+                }
+
+            }
+
+            return simplified;
+        } 
     }
+
+      
 }

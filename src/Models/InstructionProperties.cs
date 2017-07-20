@@ -36,6 +36,7 @@ namespace rideaway_backend.Model{
             meta.Attributes.TryGetValue("ref", out RefTemp);
             properties.Add("ref", RefTemp);
             
+            
             float time;
             float dist;
             route.DistanceAndTimeAt(Instruction.Shape, out dist, out time);
