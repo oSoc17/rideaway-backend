@@ -4,29 +4,28 @@ using Newtonsoft.Json.Linq;
 using Itinero;
 using rideaway_backend.Extensions;
 using System;
+using rideaway_backend.Instance;
 
 namespace rideaway_backend.Model {
     public class RouteResponse {
         private Route RouteObj;
+        private IList<Instruction> rawInstructions;
 
         public JObject Route {get;set;}
 
         public GeoJsonFeatureCollection Instructions {get; set;}
-/*
-        public RouteResponse(Route RouteObj){
-            this.RouteObj = RouteObj;
-            Route = JObject.Parse(RouteObj.ToGeoJson());
-        }*/
 
         public RouteResponse(Route RouteObj, bool colorCorrection, bool instructions,  string language="en"){
             this.RouteObj = RouteObj;
             if (colorCorrection){
-                IList<Instruction> simplified = SimplifyInstructions(language);
-                correctColours(simplified);
+                rawInstructions = RouteObj.GenerateInstructions(Languages.GetLanguage(language));
+                rawInstructions = makeContinuous();
+                rawInstructions = SimplifyInstructions();
+                correctColours();
                 if (instructions) {
                     IList<InstructionProperties> InstructionProps = new List<InstructionProperties>();{
                     Instruction Previous = null;
-                    foreach(Instruction instruction in simplified){
+                    foreach(Instruction instruction in rawInstructions){
                         if (Previous == null){
                             Previous = instruction;
                         }
@@ -41,89 +40,92 @@ namespace rideaway_backend.Model {
                 }
             }
             Route = JObject.Parse(RouteObj.ToGeoJson());        
-        }
-
-/*
-        public RouteResponse(Route RouteObj, IList<Instruction> rawInstructions){
-            this.RouteObj = RouteObj;
-            
-            IList<InstructionProperties> InstructionProps = new List<InstructionProperties>();
-            IList<Instruction> simplified = SimplifyInstructions(rawInstructions, RouteObj);
-            correctColours(RouteObj, simplified);
-            Instruction Previous = null;
-            foreach(Instruction instruction in simplified){
-                if (Previous == null){
-                    Previous = instruction;
-                }
-                else {
-                    InstructionProps.Add(new InstructionProperties(Previous, instruction, RouteObj));
-                    Previous = instruction;
-                }                
-            }
-            InstructionProps.Add(new InstructionProperties(Previous, null, RouteObj));
-            Instructions = new GeoJsonFeatureCollection(InstructionProps);
-            Route = JObject.Parse(RouteObj.ToGeoJson());
-        }*/
+        }      
         
-        public IList<Instruction> SimplifyInstructions(string language){
-            IList<Instruction> instructions = RouteObj.GenerateInstructions();
+        public IList<Instruction> SimplifyInstructions(){
             IList<Instruction> simplified = new List<Instruction>();
             string currentRef = null;
-            simplified.Add(instructions[0]);
-            instructions[1].Type = "enter";
-            simplified.Add(instructions[1]);
-            for (var i = 2; i < instructions.Count; i++){
-                Instruction ins = instructions[i];
+            string currentColour = null;
+            simplified.Add(rawInstructions[0]);
+            simplified.Add(rawInstructions[1]);
+            Instruction previous = null;
+            for (var i = 2; i < rawInstructions.Count - 1; i++){
+                Instruction ins = rawInstructions[i];
                 if (currentRef == null){
                     string refs = ins.GetAttribute("ref", RouteObj);
+                    string colours = ins.GetAttribute("colour", RouteObj);
                     if (refs != null){
                         currentRef = refs.Split(',')[0];
                         ins.SetAttribute("ref", currentRef, RouteObj);
-                        string colours = ins.GetAttribute("colour", RouteObj);
-                        string currentColour = colours.Split(',')[0];
-                        ins.SetAttribute("colour", currentColour, RouteObj);
-                        simplified.Add(ins);
+                        currentColour = colours.Split(',')[0];
+                        ins.SetAttribute("colour", currentColour, RouteObj);     
+                        previous = ins;
                     }                        
                 }
                 else {
                     string refs = ins.GetAttribute("ref", RouteObj);
+                    string colours = ins.GetAttribute("colour", RouteObj);
                     if (refs != null && !refs.Contains(currentRef)){
+                        previous.SetAttribute("ref", currentRef, RouteObj);
+                        previous.SetAttribute("colour", currentColour, RouteObj);
                         currentRef = refs.Split(',')[0];
-                        ins.SetAttribute("ref", currentRef, RouteObj);
-                        string colours = ins.GetAttribute("colour", RouteObj);
-                        string currentColour = colours.Split(',')[0];
-                        ins.SetAttribute("colour", currentColour, RouteObj);
-                        simplified.Add(ins);
+                        
+                        currentColour = colours.Split(',')[0];
+                        
+                        simplified.Add(previous); 
                     }
                 }
+                previous = ins;
             }
 
-            if (instructions.Count >= 3){
-                if (instructions.Count >=4){
-                    instructions[instructions.Count-2].Type = "leave";
-                    simplified.Add(instructions[instructions.Count-2]);
+            if (rawInstructions.Count >= 3){
+                if (rawInstructions.Count >=4){
+                    simplified.Add(rawInstructions[rawInstructions.Count-2]);
                 }
-                simplified.Add(instructions[instructions.Count-1]);
+                simplified.Add(rawInstructions[rawInstructions.Count-1]);
             }            
 
             return simplified;
         }
 
-        public void correctColours(IList<Instruction> instructions){
+        public void correctColours(){
             int instructionIndex = 0;
-            Instruction currentInstruction = instructions[instructionIndex + 1];
+            Instruction currentInstruction = rawInstructions[instructionIndex];
             
             for(var i = 0; i < RouteObj.ShapeMeta.Length; i++){
                 int currentShape = RouteObj.ShapeMeta[i].Shape;
                 if(currentShape == currentInstruction.Shape){
+                   
                     instructionIndex++;
-                    if(instructionIndex < instructions.Count - 1){
-                        currentInstruction = instructions[instructionIndex + 1];
+                    if(instructionIndex < rawInstructions.Count){
+                        currentInstruction = rawInstructions[instructionIndex];
                     }
                 }
-                RouteObj.ShapeMeta[i].Attributes.AddOrReplace("colour", currentInstruction.GetAttribute("colour", RouteObj));
+                if (i < RouteObj.ShapeMeta.Length - 1){
+                    RouteObj.ShapeMeta[i + 1].Attributes.AddOrReplace("colour", currentInstruction.GetAttribute("colour", RouteObj));
+                }
 
             }
+        }
+
+        public IList<Instruction> makeContinuous(){
+            IList<Instruction> continuous = new List<Instruction>();
+            continuous.Add(rawInstructions[0]);
+            rawInstructions[1].Type = "enter";
+            continuous.Add(rawInstructions[1]);
+            for (var i = 2; i < rawInstructions.Count - 2; i++){
+                if(rawInstructions[i].GetAttribute("ref", RouteObj) != null){
+                    continuous.Add(rawInstructions[i]);
+                }
+            }
+            if (rawInstructions.Count >= 3){
+                if (rawInstructions.Count >=4){
+                    rawInstructions[rawInstructions.Count-2].Type = "leave";
+                    continuous.Add(rawInstructions[rawInstructions.Count-2]);
+                }
+                continuous.Add(rawInstructions[rawInstructions.Count-1]);
+            }
+            return continuous;
         } 
     }
 
