@@ -4,8 +4,9 @@ Backend for rideaway: a bicycle navigation application. Provides a routing endpo
 
 ## Installation
 
-Make sure you have the .NET Core library installed https://www.microsoft.com/net/core
-Run `build.sh` or `build.bat` to build it and `run.sh` or `run.bat` to run it. The Api will start on http://localhost:5000
+Make sure you have the .NET Core library installed: https://www.microsoft.com/net/core.
+
+Run `build.sh` or `build.bat` to build the application and `run.sh` or `run.bat` to run the application. The Api will start on http://localhost:5000.
 
 ## Api
 
@@ -21,5 +22,5 @@ Launch a `GET` request to `hostname/route`
 	- `balanced`: tries to select calmer streets
 	- `shortest`: the shortest route, but maybe not the most pleasant one
 	- `brussels`: use the brussels bicycle network as much as possible
-- `instructions`: Boolean to specify if you want the API to return route instructions or not.
-- `lang`: specify the language of the instructions (supported: `en` and `nl`).
+- `instructions`: Boolean to specify if you want the API to return route instructions or not (instructions are only supported on the `brussels` profile)
+- `lang`: specify the language of the instructions (supported: `en` and `nl`)
