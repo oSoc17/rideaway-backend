@@ -86,7 +86,9 @@ namespace rideaway_backend.Model {
 
             if (rawInstructions.Count >= 3){
                 if (rawInstructions.Count >=4){
-                    simplified.Add(rawInstructions[rawInstructions.Count-2]);
+                    previous.SetAttribute("ref", currentRef, RouteObj);
+                    previous.SetAttribute("colour", currentColour, RouteObj);
+                    simplified.Add(previous);
                 }
                 simplified.Add(rawInstructions[rawInstructions.Count-1]);
             }            

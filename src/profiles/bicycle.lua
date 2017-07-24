@@ -52,19 +52,17 @@ profile_whitelist = {
 	"roundabout",
 	"cycleway", 
 	"cyclenetwork",
-	"lcn",
-	"rcn",
 	"brussels",
 	"oneway:bicycle",
-	"operator"	
+	"operator"
 }
 
 meta_whitelist = {
 	"name",
 	"bridge",
 	"tunnel",
-	"ref",
-	"colour"
+	"colour",
+	"ref"
 }
 
 profiles = {
