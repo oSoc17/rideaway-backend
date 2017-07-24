@@ -57,7 +57,9 @@ namespace rideaway_backend.Model {
                     if (refs != null){
                         currentRef = refs.Split(',')[0];
                         ins.SetAttribute("ref", currentRef, RouteObj);
-                        currentColour = colours.Split(',')[0];
+                        if (colours != null){
+                            currentColour = colours.Split(',')[0];
+                        }
                         ins.SetAttribute("colour", currentColour, RouteObj);     
                         previous = ins;
                     }                        
@@ -65,12 +67,16 @@ namespace rideaway_backend.Model {
                 else {
                     string refs = ins.GetAttribute("ref", RouteObj);
                     string colours = ins.GetAttribute("colour", RouteObj);
+                    if (colours == null){
+                        Console.WriteLine("colours null");
+                    }
                     if (refs != null && !refs.Contains(currentRef)){
                         previous.SetAttribute("ref", currentRef, RouteObj);
                         previous.SetAttribute("colour", currentColour, RouteObj);
                         currentRef = refs.Split(',')[0];
-                        
-                        currentColour = colours.Split(',')[0];
+                        if (colours != null){
+                            currentColour = colours.Split(',')[0];
+                        }
                         
                         simplified.Add(previous); 
                     }
