@@ -1,7 +1,12 @@
-﻿
+﻿--[[
+	Lua configuration file for the profiles used when routing, defines properties, 
+	preprocessing actions, routing behaviour and instruction generation.
+--]]
+
 name = "bicycle"
 vehicle_types = { "vehicle", "bicycle" }
 
+-- bicycle speeds
 minspeed = 13
 maxspeed = 13
 
@@ -42,6 +47,7 @@ access_values = {
 	["use_sidepath"] = false
 }
 
+-- Properties to add to the metadata in the routerdb
 profile_whitelist = {
 	"highway",
 	"oneway",
@@ -57,6 +63,7 @@ profile_whitelist = {
 	"operator"
 }
 
+-- Tags of the osm data to add to the metadata in the routerdb
 meta_whitelist = {
 	"name",
 	"bridge",
@@ -65,6 +72,7 @@ meta_whitelist = {
 	"ref"
 }
 
+-- The different profiles
 profiles = {
 	{
 		name = "",
@@ -93,7 +101,7 @@ profiles = {
 	}
 }
 
--- processes relation and adds the attributes_to_keep to the child ways for use in routing
+-- Processes relation and adds the attributes_to_keep to the child ways for use in routing
 function relation_tag_processor (attributes, result)
 	result.attributes_to_keep = {}
 	if attributes.network == "lcn" then
@@ -101,9 +109,6 @@ function relation_tag_processor (attributes, result)
 	end
 	if attributes.network == "rcn" then
 		result.attributes_to_keep.rcn = "yes"
-	end
-	if attributes.operator != nil then
-		result.attributes_to_keep.operator = attributes.operator
 	end
 	if (attributes.network == "lcn" or attributes.network == "rcn") and
 		attributes.operator == "Brussels Mobility" then
@@ -279,6 +284,10 @@ function factor_and_speed_networks (attributes, result)
 
 end
 
+--[[
+	Function to calculate the factor of an edge in the graph when routing.
+	If the edge is part of the brussels mobility network, favor it by a factor of 3.
+--]]
 function factor_and_speed_networks_brussels (attributes, result)
 	factor_and_speed_balanced(attributes, result)
 	if result.speed == 0 then
@@ -286,7 +295,7 @@ function factor_and_speed_networks_brussels (attributes, result)
 	end
 
 	if attributes.brussels then
-		result.factor = result.factor / 5
+		result.factor = result.factor / 3
 	end
 end
 
@@ -380,7 +389,10 @@ function get_roundabout (route_position, language_reference, instruction)
 	return 0
 end
 
--- gets a turn
+--[[
+	Generates an instrutions every time the reference of the road changes and
+	every time you leave or enter the cyclenetwork.
+--]]
 function get_turn (route_position, language_reference, instruction) 
 	local relative_direction = route_position.relative_direction().direction
 
@@ -400,15 +412,10 @@ function get_turn (route_position, language_reference, instruction)
 		 next_cyclenetwork = next.attributes.brussels
 		 next_ref = next.attributes.ref
 	end
+
+	-- Checks if an instruction has to be generated.
 	if branches and cyclenetwork and next_cyclenetwork and ref ~= next_ref then
 		turn_relevant = true
-		--for ref_part in string.gmatch(ref, '([^,]+)') do
-		--	for next_ref_part in string.gmatch(next_ref, '([^,]+)') do
-		--		if ref_part == next_ref_part then
-		--			turn_relevant = false
-		--		end
-		--	end
-		--end
 	end
 	if branches then
 		if cyclenetwork and not next_cyclenetwork then
@@ -417,12 +424,8 @@ function get_turn (route_position, language_reference, instruction)
 			turn_relevant = true
 		end	
 	end
-	--if branches then
-	--	if cyclenetwork and next_cyclenetwork and (ref ~= next_ref) then
-	--		turn_relevant = true
-	--	end
-	--end
 
+	-- Set the properties of the instruction
 	if turn_relevant then
 		local name = nil
 		
@@ -463,11 +466,9 @@ function get_turn (route_position, language_reference, instruction)
 				if name then
 					instruction.text = itinero.format(language_reference.get("Go {0} on {1}."), 
 						language_reference.get(relative_direction), name)
-					instruction.shape = route_position.shape
 				else
 					instruction.text = itinero.format(language_reference.get("Go {0}."), 
 						language_reference.get(relative_direction))
-					instruction.shape = route_position.shape
 				end
 			end
 		end
