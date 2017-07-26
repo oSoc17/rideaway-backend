@@ -29,6 +29,7 @@ namespace rideaway_backend.Model {
             this.RouteObj = RouteObj;
             if (colourCorrection) {
                 rawInstructions = RouteObj.GenerateInstructions (Languages.GetLanguage (language));
+                RouteObj.GenerateBicycleInstructions();
                 rawInstructions = rawInstructions.makeContinuous (RouteObj);
                 rawInstructions = rawInstructions.simplify (RouteObj);
                 RouteObj.correctColours (rawInstructions);
