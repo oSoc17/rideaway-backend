@@ -60,7 +60,9 @@ profile_whitelist = {
 	"cyclenetwork",
 	"brussels",
 	"oneway:bicycle",
-	"operator"
+	"operator",
+	"cycleref",
+	"cyclecolour"
 }
 
 -- Tags of the osm data to add to the metadata in the routerdb
@@ -115,10 +117,10 @@ function relation_tag_processor (attributes, result)
 		result.attributes_to_keep.brussels = "yes"
 	end
 	if attributes.colour != nil and result.attributes_to_keep.brussels == "yes" then
-		result.attributes_to_keep.colour = attributes.colour
+		result.attributes_to_keep.cyclecolour = attributes.colour
 	end
 	if attributes.ref != nil and result.attributes_to_keep.brussels == "yes" then
-		result.attributes_to_keep.ref = attributes.ref
+		result.attributes_to_keep.cycleref = attributes.ref
 	end
 	if attributes.type == "route" and
 	   attributes.route == "bicycle" then
@@ -399,18 +401,15 @@ function get_turn (route_position, language_reference, instruction)
 	local turn_relevant = false
 	local branches = route_position.branches
 
-	local current_colour = route_position.attributes.colour
-	local ref = route_position.attributes.ref
-	local next_colour = nil
+	local ref = route_position.attributes.cycleref
 	local cyclenetwork = route_position.attributes.brussels
 	local next_cyclenetwork = nil
 	local next_ref;
 	local next = route_position.next()
 	
 	if next then
-		 next_colour = next.attributes.colour
 		 next_cyclenetwork = next.attributes.brussels
-		 next_ref = next.attributes.ref
+		 next_ref = next.attributes.cycleref
 	end
 
 	-- Checks if an instruction has to be generated.

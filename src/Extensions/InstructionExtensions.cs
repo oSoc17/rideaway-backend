@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Itinero;
 using Itinero.Navigation.Instructions;
 using rideaway_backend.Model;
+using System.Text.RegularExpressions;
+using System;
 
 namespace rideaway_backend.Extensions {
     /// <summary>
@@ -32,6 +34,12 @@ namespace rideaway_backend.Extensions {
             route.ShapeMetaFor (instruction.Shape).Attributes.AddOrReplace (key, value);
         }
 
+        /// <summary>
+        /// Converts a list of instructions to a geojson featurecollection.
+        /// </summary>
+        /// <param name="instructions">instructions to convert</param>
+        /// <param name="Route">the route</param>
+        /// <returns>a geojson featurecollection containing the instructions</returns>
         public static GeoJsonFeatureCollection ToGeoJsonCollection (this IList<Instruction> instructions, Route Route) {
             IList<InstructionProperties> InstructionProps = new List<InstructionProperties> ();
             Instruction Previous = null;
@@ -48,13 +56,20 @@ namespace rideaway_backend.Extensions {
             return new GeoJsonFeatureCollection (InstructionProps);
         }
 
+        /// <summary>
+        /// Makes the instructions continuous by removing gaps, these gaps are likely caused by 
+        /// incorrect osm data.
+        /// </summary>
+        /// <param name="instructions">instructions to make continuous</param>
+        /// <param name="Route">the route</param>
+        /// <returns>list of continuous instructions</returns>
         public static IList<Instruction> makeContinuous (this IList<Instruction> instructions, Route Route) {
             IList<Instruction> continuous = new List<Instruction> ();
             continuous.Add (instructions[0]);
             instructions[1].Type = "enter";
             continuous.Add (instructions[1]);
             for (var i = 2; i < instructions.Count - 2; i++) {
-                if (instructions[i].GetAttribute ("ref", Route) != null) {
+                if (instructions[i].GetAttribute ("cycleref", Route) != null) {
                     continuous.Add (instructions[i]);
                 }
             }
@@ -68,6 +83,13 @@ namespace rideaway_backend.Extensions {
             return continuous;
         }
 
+        /// <summary>
+        /// Simplifies instructions by removing unnecessary instructions and setting the 
+        /// reference and colour attributes to the one element (sometimes routes overlap).
+        /// </summary>
+        /// <param name="instructions">the instructions to simplify</param>
+        /// <param name="Route">the route</param>
+        /// <returns>list of simplified instructions</returns>
         public static IList<Instruction> simplify (this IList<Instruction> instructions, Route Route) {
             IList<Instruction> simplified = new List<Instruction> ();
             string currentRef = null;
@@ -78,23 +100,26 @@ namespace rideaway_backend.Extensions {
             for (var i = 2; i < instructions.Count - 1; i++) {
                 Instruction ins = instructions[i];
                 if (currentRef == null) {
-                    string refs = ins.GetAttribute ("ref", Route);
-                    string colours = ins.GetAttribute ("colour", Route);
+                    string refs = ins.GetAttribute ("cycleref", Route);
+                    string colours = ins.GetAttribute ("cyclecolour", Route);
                     if (refs != null) {
                         currentRef = refs.Split (',')[0];
-                        ins.SetAttribute ("ref", currentRef, Route);
+                        ins.SetAttribute ("cycleref", currentRef, Route);
                         if (colours != null) {
                             currentColour = colours.Split (',')[0];
                         }
-                        ins.SetAttribute ("colour", currentColour, Route);
+                        ins.SetAttribute ("cyclecolour", currentColour, Route);
                         previous = ins;
                     }
                 } else {
-                    string refs = ins.GetAttribute ("ref", Route);
-                    string colours = ins.GetAttribute ("colour", Route);
-                    if (refs != null && !refs.Contains (currentRef)) {
-                        previous.SetAttribute ("ref", currentRef, Route);
-                        previous.SetAttribute ("colour", currentColour, Route);
+                    string refs = ins.GetAttribute ("cycleref", Route);
+                    string colours = ins.GetAttribute ("cyclecolour", Route);
+                    //create regex to check if current ref is contained in the string
+                    Regex reg =  new Regex(@"^" + currentRef +  ",|," + currentRef + ",|," +  currentRef + "$");
+                    Console.WriteLine(reg.ToString());
+                    if (refs != null && !reg.IsMatch(refs)) {
+                        previous.SetAttribute ("cycleref", currentRef, Route);
+                        previous.SetAttribute ("cyclecolour", currentColour, Route);
                         currentRef = refs.Split (',')[0];
                         if (colours != null) {
                             currentColour = colours.Split (',')[0];
@@ -108,8 +133,8 @@ namespace rideaway_backend.Extensions {
 
             if (instructions.Count >= 3) {
                 if (instructions.Count >= 4) {
-                    previous.SetAttribute ("ref", currentRef, Route);
-                    previous.SetAttribute ("colour", currentColour, Route);
+                    previous.SetAttribute ("cycleref", currentRef, Route);
+                    previous.SetAttribute ("cyclecolour", currentColour, Route);
                     simplified.Add (previous);
                 }
                 simplified.Add (instructions[instructions.Count - 1]);

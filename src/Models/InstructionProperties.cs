@@ -38,8 +38,8 @@ namespace rideaway_backend.Model {
             properties.Add ("instruction", Instruction.Text);
             Route.Meta meta = route.ShapeMetaFor (Instruction.Shape);
 
-            properties.Add ("colour", Instruction.GetAttribute ("colour", route));
-            properties.Add ("ref", Instruction.GetAttribute ("ref", route));
+            properties.Add ("colour", Instruction.GetAttribute ("cyclecolour", route));
+            properties.Add ("ref", Instruction.GetAttribute ("cycleref", route));
 
             float time;
             float dist;
@@ -50,8 +50,8 @@ namespace rideaway_backend.Model {
 
             if (Next != null) {
                 Route.Meta nextMeta = route.ShapeMetaFor (Next.Shape);
-                properties.Add ("nextColour", Next.GetAttribute ("colour", route));
-                properties.Add ("nextRef", Next.GetAttribute ("ref", route));
+                properties.Add ("nextColour", Next.GetAttribute ("cyclecolour", route));
+                properties.Add ("nextRef", Next.GetAttribute ("cycleref", route));
 
                 this.Direction = route.DirectionToNext (Instruction.Shape);
                 properties.Add ("direction", Direction.ToString ());
