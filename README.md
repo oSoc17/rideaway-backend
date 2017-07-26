@@ -2,9 +2,13 @@
 
 Backend for rideaway: a bicycle navigation application. Provides a routing endpoint where you can provide two coordinates to get the route between these points. Different routing profiles can be used to get different routing behavior and there is support for route instructions.
 
+The backend uses the open source routing library [Itinero](https://github.com/itinero/routing) by [Ben Abelshausen](https://github.com/xivk).
+
 ## Installation
 
-Make sure you have the .NET Core library installed: https://www.microsoft.com/net/core.
+The backend requires a routerdb file called `belgium.routerdb` to be in `src/mapdata`. There is a bash shell script in `src/datascript` that downloads the latest `osm.pbf` file of belgium from [geofabrik](https://www.geofabrik.de/) and processes it with [IDP](https://github.com/itinero/idp) to create the routerdb file.
+
+To build the application, make sure you have the .NET Core library installed: https://www.microsoft.com/net/core.
 
 Run `build.sh` or `build.bat` to build the application and `run.sh` or `run.bat` to run the application. The Api will start on http://localhost:5000.
 
