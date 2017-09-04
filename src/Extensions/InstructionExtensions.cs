@@ -85,7 +85,7 @@ namespace rideaway_backend.Extensions {
 
         /// <summary>
         /// Simplifies instructions by removing unnecessary instructions and setting the 
-        /// reference and colour attributes to the one element (sometimes routes overlap).
+        /// reference and colour attributes to one element (sometimes routes overlap).
         /// </summary>
         /// <param name="instructions">the instructions to simplify</param>
         /// <param name="Route">the route</param>
@@ -115,8 +115,7 @@ namespace rideaway_backend.Extensions {
                     string refs = ins.GetAttribute ("cycleref", Route);
                     string colours = ins.GetAttribute ("cyclecolour", Route);
                     //create regex to check if current ref is contained in the string
-                    Regex reg =  new Regex(@"^" + currentRef +  ",|," + currentRef + ",|," +  currentRef + "$");
-                    Console.WriteLine(reg.ToString());
+                    Regex reg =  new Regex(@"^" + currentRef + ",|^" + currentRef +  "$|," + currentRef + ",|," +  currentRef + "$");
                     if (refs != null && !reg.IsMatch(refs)) {
                         previous.SetAttribute ("cycleref", currentRef, Route);
                         previous.SetAttribute ("cyclecolour", currentColour, Route);
