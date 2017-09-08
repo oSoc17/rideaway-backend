@@ -37,6 +37,7 @@ namespace rideaway_backend.Controllers {
                 Route route = RouterInstance.Calculate (profile, from, to);
 
                 if (profile == "brussels") {
+                    RequestLogger.LogRequest(from, to);
                     return Json (new RouteResponse (route, true, instructions, lang));
                 }
                 return Json (new RouteResponse (route, false, instructions, lang));

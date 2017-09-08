@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using rideaway_backend.Instance;
 
@@ -41,6 +44,8 @@ namespace rideaway_backend {
                 options.AddPolicy ("AllowAnyOrigin",
                     builder => builder.AllowAnyOrigin ().AllowAnyHeader ().WithMethods ("GET"));
             });
+            services.AddDirectoryBrowser();
+
             RouterInstance.initialize ();
             Languages.initialize ();
         }
@@ -58,6 +63,20 @@ namespace rideaway_backend {
             app.UseMvc ();
             app.UseCors ("AllowAnyOrigin");
             app.UseStaticFiles ();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "requests")),
+                RequestPath = new PathString("/requests")
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "requests")),
+                RequestPath = new PathString("/requests")
+            });
         }
     }
 }
