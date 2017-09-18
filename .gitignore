@@ -207,3 +207,8 @@ $RECYCLE.BIN/
 *.routerdb
 *.osm.pbf
 *.osm.pbf.1
+
+# Ignore python compile
+*.pyc
+
+*.geojson
