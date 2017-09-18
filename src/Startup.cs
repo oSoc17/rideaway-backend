@@ -69,6 +69,12 @@ namespace rideaway_backend {
                     Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "requests")),
                 RequestPath = new PathString("/requests")
             });
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "routes")),
+                RequestPath = new PathString("/routes")
+            });
 
             app.UseDirectoryBrowser(new DirectoryBrowserOptions()
             {
