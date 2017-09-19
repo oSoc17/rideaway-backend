@@ -1,8 +1,8 @@
-# rideaway-backend(v 1.7.0)
+# rideaway-backend(v 1.8.0)
 
 Backend for rideaway: a bicycle navigation application. Provides a routing endpoint where you can provide two coordinates to get the route between these points. Different routing profiles can be used to get different routing behavior and there is support for route instructions.
 
-For all requests over the brussels cycle network timestamps, starting location and ending location are saved in the csv file corresponding with the date, which is available from `hostname/requests`.
+For all requests over the brussels cycle network timestamps, starting location and ending location are saved in the csv file corresponding with the date, which is available from `hostname/requests/data`.
 
 <<<<<<< HEAD
 =======
