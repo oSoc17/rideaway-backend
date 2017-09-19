@@ -62,6 +62,7 @@ namespace rideaway_backend {
 
             app.UseMvc ();
             app.UseCors ("AllowAnyOrigin");
+            app.UseDefaultFiles();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
