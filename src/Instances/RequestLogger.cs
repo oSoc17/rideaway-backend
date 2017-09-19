@@ -12,7 +12,7 @@ namespace rideaway_backend.Instance {
             + to.Latitude.ToString(new CultureInfo ("en-US")) + "," 
             + to.Longitude.ToString(new CultureInfo ("en-US")) + "\n";
 
-            File.AppendAllText(@"wwwroot/requests/data" + DateTime.Now.ToString("dd-MM-yyyy") + ".csv", row);
+            File.AppendAllText(@"wwwroot/requests/data/" + DateTime.Now.ToString("dd-MM-yyyy") + ".csv", row);
         }
     }
 }
