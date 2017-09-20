@@ -13,5 +13,6 @@
     <PackageReference Include="Itinero" Version="1.2.0-pre05"/>
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.2"/>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3"/>
+    <PackageReference Include="RTree" Version="1.0.2.1"/>
   </ItemGroup>
 </Project>
