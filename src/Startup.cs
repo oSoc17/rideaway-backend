@@ -48,6 +48,7 @@ namespace rideaway_backend {
 
             RouterInstance.initialize ();
             Languages.initialize ();
+            ParkingInstance.initialize();
         }
 
         /// <summary>

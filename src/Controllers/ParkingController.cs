@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using rideaway_backend.Util;
 using Itinero.LocalGeo;
 using rideaway_backend.Exceptions;
+using rideaway_backend.Instance;
 using System;
 
 namespace rideaway_backend.Controllers {
@@ -14,7 +15,7 @@ namespace rideaway_backend.Controllers {
             try {
                 Coordinate location = Utility.ParseCoordinate (loc);
                 
-                return null;
+                return Json (ParkingInstance.getParkings(location, radius));
 
             } catch (ResolveException re) {
                 return NotFound (re.Message);
