@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Itinero;
 using Itinero.Navigation.Instructions;
 using rideaway_backend.Model;
-using System.Text.RegularExpressions;
-using System;
 
 namespace rideaway_backend.Extensions {
     /// <summary>
@@ -66,7 +65,7 @@ namespace rideaway_backend.Extensions {
         public static IList<Instruction> makeContinuous (this IList<Instruction> instructions, Route Route) {
             IList<Instruction> continuous = new List<Instruction> ();
             continuous.Add (instructions[0]);
-            if (instructions[1].GetAttribute("cycleref", Route) == null){
+            if (instructions[1].GetAttribute ("cycleref", Route) == null) {
                 instructions[1].Type = "enter";
             }
             continuous.Add (instructions[1]);
@@ -78,7 +77,7 @@ namespace rideaway_backend.Extensions {
             }
             if (instructions.Count >= 3) {
                 if (instructions.Count >= 4) {
-                    if(instructions[instructions.Count - 1].GetAttribute("cycleref", Route) == null){
+                    if (instructions[instructions.Count - 1].GetAttribute ("cycleref", Route) == null) {
                         instructions[instructions.Count - 2].Type = "leave";
                     }
                     continuous.Add (instructions[instructions.Count - 2]);
@@ -100,13 +99,13 @@ namespace rideaway_backend.Extensions {
             string currentRef = null;
             string currentColour = null;
             var c = 0;
-            while(instructions[c].Type != "turn"){
-                simplified.Add(instructions[c]);
+            while (instructions[c].Type != "turn") {
+                simplified.Add (instructions[c]);
                 c++;
             }
             Instruction previous = null;
             Instruction ins = instructions[c];
-            while(ins.GetAttribute("cycleref", Route) != "null" && c != instructions.Count){
+            while (ins.GetAttribute ("cycleref", Route) != "null" && c != instructions.Count) {
                 if (currentRef == null) {
                     string refs = ins.GetAttribute ("cycleref", Route);
                     string colours = ins.GetAttribute ("cyclecolour", Route);
@@ -123,8 +122,8 @@ namespace rideaway_backend.Extensions {
                     string refs = ins.GetAttribute ("cycleref", Route);
                     string colours = ins.GetAttribute ("cyclecolour", Route);
                     //create regex to check if current ref is contained in the string
-                    Regex reg =  new Regex(@"^" + currentRef + ",|^" + currentRef +  "$|," + currentRef + ",|," +  currentRef + "$");
-                    if (refs != null && !reg.IsMatch(refs)) {
+                    Regex reg = new Regex (@"^" + currentRef + ",|^" + currentRef + "$|," + currentRef + ",|," + currentRef + "$");
+                    if (refs != null && !reg.IsMatch (refs)) {
                         previous.SetAttribute ("cycleref", currentRef, Route);
                         previous.SetAttribute ("cyclecolour", currentColour, Route);
                         currentRef = refs.Split (',')[0];
@@ -137,21 +136,20 @@ namespace rideaway_backend.Extensions {
                 }
                 previous = ins;
                 c++;
-                if(c < instructions.Count){
+                if (c < instructions.Count) {
                     ins = instructions[c];
                 }
             }
-
 
             if (instructions.Count >= 3) {
                 if (instructions.Count >= 4) {
                     previous.SetAttribute ("cycleref", currentRef, Route);
                     previous.SetAttribute ("cyclecolour", currentColour, Route);
                     simplified.Add (previous);
-                                        
+
                 }
                 //if there is a leave instruction add the last instruction as it is not yet added
-                if (instructions[instructions.Count - 2].Type == "leave" ){
+                if (instructions[instructions.Count - 2].Type == "leave") {
                     simplified.Add (instructions[instructions.Count - 1]);
                 }
             }

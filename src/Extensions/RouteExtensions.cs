@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Itinero;
 using Itinero.Navigation.Instructions;
-using System;
 
 namespace rideaway_backend.Extensions {
     public static class RouteExtensions {

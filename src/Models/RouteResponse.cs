@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Itinero;
 using Itinero.Navigation.Instructions;

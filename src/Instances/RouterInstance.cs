@@ -1,8 +1,6 @@
-using System;
 using System.IO;
 using Itinero;
 using Itinero.LocalGeo;
-using Itinero.Navigation;
 using Itinero.Profiles;
 using rideaway_backend.Exceptions;
 using rideaway_backend.FileMonitoring;

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Itinero;
-using Itinero.LocalGeo;
 using Itinero.Navigation.Directions;
 using Itinero.Navigation.Instructions;
 using rideaway_backend.Extensions;

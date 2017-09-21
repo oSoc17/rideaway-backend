@@ -1,47 +1,58 @@
-using Itinero.LocalGeo;
-using GeoJSON.Net.Feature;
-using GeoJSON.Net.Geometry;
-using GeoJSON.Net.CoordinateReferenceSystem;
-using GeoJSON.Net.Converters;
-using System.IO;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using GeoJSON.Net.Feature;
+using GeoJSON.Net.Geometry;
+using Itinero.LocalGeo;
+using Newtonsoft.Json;
 using rideaway_backend.Structure;
 
-namespace rideaway_backend.Instance
-{
+namespace rideaway_backend.Instance {
     public class ParkingInstance {
         private static ParkingMap parkings;
 
-        
-        public static FeatureCollection getParkings(Coordinate location, int radius){
-            Position lambert = WSG84toLambert72(location.Latitude, location.Longitude);
-            List<Feature> inside = parkings.RadiusFeatures(lambert.Longitude,lambert.Latitude,radius);
-            List<Feature> insideWSG = new List<Feature>();
-            foreach (Feature f in inside){
-                Point point = (Point)f.Geometry;
-                Point newPoint = new Point(Lambert72toWGS84(point.Coordinates.Longitude, point.Coordinates.Latitude));
-                Feature newFeature = new Feature(newPoint, f.Properties, f.Id);
-                insideWSG.Add(newFeature);
+        /// <summary>
+        /// Get a FeatureCollection of the bicycle parkings in the radius of the given location.
+        /// </summary>
+        /// <param name="location">location</param>
+        /// <param name="radius">radius in meters</param>
+        /// <returns>FeatureCollection containing the parkings in the radius</returns>
+        public static FeatureCollection getParkings (Coordinate location, int radius) {
+            Position lambert = WSG84toLambert72 (location.Latitude, location.Longitude);
+            List<Feature> inside = parkings.RadiusFeatures (lambert.Longitude, lambert.Latitude, radius);
+            List<Feature> insideWSG = new List<Feature> ();
+            foreach (Feature f in inside) {
+                Point point = (Point) f.Geometry;
+                Point newPoint = new Point (Lambert72toWGS84 (point.Coordinates.Longitude, point.Coordinates.Latitude));
+                Feature newFeature = new Feature (newPoint, f.Properties, f.Id);
+                insideWSG.Add (newFeature);
             }
-            return new FeatureCollection(insideWSG);
-        }
-    
-        public static void initialize(){
-            parkings = new ParkingMap();
-
-            string json = File.ReadAllText("parkings/bicycleparking.json");
-            FeatureCollection raw = JsonConvert.DeserializeObject<FeatureCollection>(json);
-            foreach (Feature f in raw.Features){
-                string type = f.Properties["type_nl"].ToString();
-                if (type == "Gegroepeerde bogen" || type == "Geïsoleerde boog"){
-                    parkings.Add(f);                    
-                }                
-            } 
+            return new FeatureCollection (insideWSG);
         }
 
-        public static Position Lambert72toWGS84(double x, double y) {
+        /// <summary>
+        /// Initialize the ParkingInstance.
+        /// </summary>
+        public static void initialize () {
+            parkings = new ParkingMap ();
+
+            string json = File.ReadAllText ("parkings/bicycleparking.json");
+            FeatureCollection raw = JsonConvert.DeserializeObject<FeatureCollection> (json);
+            foreach (Feature f in raw.Features) {
+                string type = f.Properties["type_nl"].ToString ();
+                if (type == "Gegroepeerde bogen" || type == "Geïsoleerde boog") {
+                    parkings.Add (f);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert a Coordinate from Lambert72 to WGS84 coordinate system.
+        /// </summary>
+        /// <param name="x">Longitude of Lambert72 coordinate pair</param>
+        /// <param name="y">Latitude of Lambert72 coordinate pair</param>
+        /// <returns>Position in WSG84 coordinate system</returns>
+        public static Position Lambert72toWGS84 (double x, double y) {
             double newLongitude;
             double newLatitude;
 
@@ -58,21 +69,28 @@ namespace rideaway_backend.Instance
             double xReal = xDiff - x;
             double yReal = yDiff - y;
 
-            double rho = Math.Sqrt(xReal * xReal + yReal * yReal);
-            double theta = Math.Atan(xReal / -yReal);
+            double rho = Math.Sqrt (xReal * xReal + yReal * yReal);
+            double theta = Math.Atan (xReal / -yReal);
 
             newLongitude = (theta0 + (theta + thetaFudge) / n) * 180 / Math.PI;
             newLatitude = 0;
 
-            for (int i = 0; i < 5 ; ++i) {
-                newLatitude = (2 * Math.Atan(Math.Pow(F * a / rho, 1 / n) * Math.Pow((1 + e * Math.Sin(newLatitude)) / (1 - e * Math.Sin(newLatitude)), e / 2))) - Math.PI / 2;
+            for (int i = 0; i < 5; ++i) {
+                newLatitude = (2 * Math.Atan (Math.Pow (F * a / rho, 1 / n) * Math.Pow ((1 + e * Math.Sin (newLatitude)) / (1 - e * Math.Sin (newLatitude)), e / 2))) - Math.PI / 2;
             }
             newLatitude *= 180 / Math.PI;
-            return new Position(newLatitude, newLongitude);
+            return new Position (newLatitude, newLongitude);
         }
 
-        public static Position WSG84toLambert72(double Lat, double Lng){
+        /// <summary>
+        /// Convert a Coordinate from WSG84 to Lambert72 coordinate system.
+        /// </summary>
+        /// <param name="Lat">Latitude of WSG84 coordinate pair</param>
+        /// <param name="Lng">Longitude of WSG84 coordinate pair</param>
+        /// <returns>Position in the Lamber72 coordinate system</returns>
+        public static Position WSG84toLambert72 (double Lat, double Lng) {
             // Algorithm as found on http://zoologie.umons.ac.be/tc/algorithms.aspx
+            // Venture no further as this quest will take to much of your stamina
 
             //
             //Input parameters : Lat, Lng : latitude / longitude in decimal degrees and in WGS84 datum
@@ -107,10 +125,10 @@ namespace rideaway_backend.Instance
             Lat = (Math.PI / 180) * Lat;
             Lng = (Math.PI / 180) * Lng;
 
-            SinLat = Math.Sin(Lat);
-            SinLng = Math.Sin(Lng);
-            CoSinLat = Math.Cos(Lat);
-            CoSinLng = Math.Cos(Lng);
+            SinLat = Math.Sin (Lat);
+            SinLng = Math.Sin (Lng);
+            CoSinLat = Math.Cos (Lat);
+            CoSinLng = Math.Cos (Lng);
 
             dx = 125.8;
             dy = -79.9;
@@ -124,8 +142,8 @@ namespace rideaway_backend.Instance
             LWe2 = (2 * LWf) - (LWf * LWf);
             Adb = 1 / (1 - LWf);
 
-            Rn = LWa / System.Math.Sqrt(1 - LWe2 * SinLat * SinLat);
-            Rm = LWa * (1 - LWe2) / Math.Pow((1 - LWe2 * Lat * Lat), 1.5);
+            Rn = LWa / System.Math.Sqrt (1 - LWe2 * SinLat * SinLat);
+            Rm = LWa * (1 - LWe2) / Math.Pow ((1 - LWe2 * Lat * Lat), 1.5);
 
             DLat = -dx * SinLat * CoSinLng - dy * SinLat * SinLng + dz * CoSinLat;
             DLat = DLat + da * (Rn * LWe2 * SinLat * CoSinLat) / LWa;
@@ -147,42 +165,38 @@ namespace rideaway_backend.Instance
             double lat = LatBel;
             double lng = LngBel;
 
-
-
             const double LongRef = 0.076042943;
             //=4°21'24"983
             const double bLamb = 6378388 * (1 - (1 / 297));
-            double aCarre = Math.Pow(6378388, 2);
-            double eCarre = (aCarre - Math.Pow(bLamb, 2)) / aCarre;
+            double aCarre = Math.Pow (6378388, 2);
+            double eCarre = (aCarre - Math.Pow (bLamb, 2)) / aCarre;
             const double KLamb = 11565915.812935;
             const double nLamb = 0.7716421928;
 
-            double eLamb = Math.Sqrt(eCarre);
+            double eLamb = Math.Sqrt (eCarre);
             double eSur2 = eLamb / 2;
 
             //conversion to radians
             lat = (Math.PI / 180) * lat;
             lng = (Math.PI / 180) * lng;
 
-            double eSinLatitude = eLamb * Math.Sin(lat);
-            double TanZDemi = (Math.Tan((Math.PI / 4) - (lat / 2))) * (Math.Pow(((1 + (eSinLatitude)) / (1 - (eSinLatitude))), (eSur2)));
+            double eSinLatitude = eLamb * Math.Sin (lat);
+            double TanZDemi = (Math.Tan ((Math.PI / 4) - (lat / 2))) * (Math.Pow (((1 + (eSinLatitude)) / (1 - (eSinLatitude))), (eSur2)));
 
-            double RLamb = KLamb * (Math.Pow((TanZDemi), nLamb));
+            double RLamb = KLamb * (Math.Pow ((TanZDemi), nLamb));
 
             double Teta = nLamb * (lng - LongRef);
 
             double x = 0;
             double y = 0;
 
-            x = 150000 + 0.01256 + RLamb * Math.Sin(Teta - 0.000142043);
+            x = 150000 + 0.01256 + RLamb * Math.Sin (Teta - 0.000142043);
             //for some reason there is an inaccuracy of 21020 m in the y direction
-            y = 5400000 - 21020 + 88.4378 - RLamb * Math.Cos(Teta - 0.000142043);
+            y = 5400000 - 21020 + 88.4378 - RLamb * Math.Cos (Teta - 0.000142043);
 
-            return new Position(y, x);
+            return new Position (y, x);
         }
 
-    
     }
 
-    
 }

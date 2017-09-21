@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Itinero;
 using Itinero.LocalGeo;
-using Itinero.Navigation.Instructions;
-using Itinero.Profiles;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
@@ -38,7 +32,7 @@ namespace rideaway_backend.Controllers {
                 Route route = RouterInstance.Calculate (profile, from, to);
 
                 if (profile == "brussels") {
-                    RequestLogger.LogRequest(from, to);
+                    RequestLogger.LogRequest (from, to);
                     return Json (new RouteResponse (route, true, instructions, lang));
                 }
                 return Json (new RouteResponse (route, false, instructions, lang));
@@ -50,6 +44,5 @@ namespace rideaway_backend.Controllers {
             }
         }
 
-        
     }
 }
