@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -44,11 +44,13 @@ namespace rideaway_backend {
                 options.AddPolicy ("AllowAnyOrigin",
                     builder => builder.AllowAnyOrigin ().AllowAnyHeader ().WithMethods ("GET"));
             });
-            services.AddDirectoryBrowser();
+            services.AddDirectoryBrowser ();
+            services.AddSingleton<IConfiguration> (Configuration);
 
-            RouterInstance.initialize ();
-            Languages.initialize ();
-            ParkingInstance.initialize();
+            RouterInstance.initialize (Configuration);
+            Languages.initialize (Configuration);
+            ParkingInstance.initialize (Configuration);
+            RequestLogger.initialize(Configuration);
         }
 
         /// <summary>
@@ -60,29 +62,31 @@ namespace rideaway_backend {
         public void Configure (IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
             loggerFactory.AddConsole (Configuration.GetSection ("Logging"));
             loggerFactory.AddDebug ();
+            
+            var paths = Configuration.GetSection ("Paths");
 
             app.UseMvc ();
             app.UseCors ("AllowAnyOrigin");
-            app.UseDefaultFiles();
+            app.UseDefaultFiles ();
 
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "requests")),
-                RequestPath = new PathString("/requests")
+            app.UseStaticFiles (new StaticFileOptions () {
+                FileProvider = new PhysicalFileProvider (
+                        Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot",
+                            paths.GetValue<string> ("LoggingEndpoint"))),
+                    RequestPath = new PathString ("/" + paths.GetValue<string> ("LoggingEndpoint"))
             });
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "routes")),
-                RequestPath = new PathString("/routes")
+            app.UseStaticFiles (new StaticFileOptions () {
+                FileProvider = new PhysicalFileProvider (
+                        Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot",
+                            paths.GetValue<string> ("CyclenetworkEndpoint"))),
+                    RequestPath = new PathString ("/" + paths.GetValue<string> ("CyclenetworkEndpoint"))
             });
 
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", "requests")),
-                RequestPath = new PathString("/requests")
+            app.UseDirectoryBrowser (new DirectoryBrowserOptions () {
+                FileProvider = new PhysicalFileProvider (
+                        Path.Combine (Directory.GetCurrentDirectory (), @"wwwroot",
+                            paths.GetValue<string> ("LoggingEndpoint"))),
+                    RequestPath = new PathString ("/" + paths.GetValue<string> ("LoggingEndpoint"))
             });
         }
     }
