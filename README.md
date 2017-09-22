@@ -1,10 +1,10 @@
-# rideaway-backend(v 1.9.1)
+# rideaway-backend(v 2.0.0)
 
 Backend for rideaway: a bicycle navigation application. Provides a routing endpoint where you can provide two coordinates to get the route between these points. Different routing profiles can be used to get different routing behavior and there is support for route instructions. Also provides an endpoint to request bicycle parkings in a certain radius around a location.
 
 For all requests over the brussels cycle network timestamps, starting location and ending location are saved in the csv file corresponding with the date, which is available from `hostname/requests/data`.
 
-There is also a script included in `srs/scripts` to extract a geojson file of the routes in the Brussels network. This is adapted from https://github.com/oSoc17/rideaway-data. This file can then be accessed via `hostname/routes/network.geojson`.
+There is also a script included in `src/scripts` to extract a geojson file of the routes in the Brussels network. This is adapted from https://github.com/oSoc17/rideaway-data. This file can then be accessed via `hostname/routes/network.geojson`.
 
 The backend uses the open source routing library [Itinero](https://github.com/itinero/routing) by [Ben Abelshausen](https://github.com/xivk).
 

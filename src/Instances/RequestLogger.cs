@@ -2,12 +2,16 @@ using System.IO;
 using System;
 using Itinero.LocalGeo;
 using System.Globalization;
+using Microsoft.Extensions.Configuration;
 
 namespace rideaway_backend.Instance {
     /// <summary>
     /// Logger for requests of routes over the cyclenetwork.
     /// </summary>
     public static class RequestLogger {
+
+        private static string path;
+
         /// <summary>
         /// Log request in file of current day with current timestamp.
         /// </summary>
@@ -20,7 +24,13 @@ namespace rideaway_backend.Instance {
             + to.Latitude.ToString(new CultureInfo ("en-US")) + "," 
             + to.Longitude.ToString(new CultureInfo ("en-US")) + "\n";
 
-            File.AppendAllText(@"wwwroot/requests/data/" + DateTime.Now.ToString("dd-MM-yyyy") + ".csv", row);
+            File.AppendAllText(path + "/" + DateTime.Now.ToString("dd-MM-yyyy") + ".csv", row);
+        }
+
+        public static void initialize(IConfiguration configuration){
+            path =  Path.Combine(@"wwwroot", 
+            configuration.GetSection("Paths").GetValue<string>("LoggingEndpoint"),
+            configuration.GetSection("Paths").GetValue<string>("LoggingFilesSubfolder"));
         }
     }
 }

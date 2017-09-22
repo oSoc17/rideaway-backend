@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Itinero.Navigation.Language;
+using Microsoft.Extensions.Configuration;
 
 namespace rideaway_backend.Instance {
     /// <summary>
@@ -12,12 +13,11 @@ namespace rideaway_backend.Instance {
         /// <summary>
         /// Initialise the language references for the supported languages.
         /// </summary>
-        public static void initialize () {
+        public static void initialize (IConfiguration configuration) {
             languages = new Dictionary<string, ILanguageReference> ();
-            //TODO make more abstract
             languages.Add ("en", new DefaultLanguageReference ());
-            languages.Add ("nl", new CsvLanguageReference (new FileInfo (@"language/nl_instructions.csv")));
-            languages.Add ("fr", new CsvLanguageReference (new FileInfo (@"language/fr_instructions.csv")));
+            languages.Add ("nl", new CsvLanguageReference (new FileInfo (configuration.GetSection("Paths").GetValue<string>("NlTranslations"))));
+            languages.Add ("fr", new CsvLanguageReference (new FileInfo (configuration.GetSection("Paths").GetValue<string>("FrTranslations"))));
         }
 
         /// <summary>

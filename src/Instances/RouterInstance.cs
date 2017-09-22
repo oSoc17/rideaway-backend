@@ -4,6 +4,7 @@ using Itinero.LocalGeo;
 using Itinero.Profiles;
 using rideaway_backend.Exceptions;
 using rideaway_backend.FileMonitoring;
+using Microsoft.Extensions.Configuration;
 
 namespace rideaway_backend.Instance {
     /// <summary>
@@ -18,20 +19,21 @@ namespace rideaway_backend.Instance {
         /// Loads the routerdb into ram and starts the file monitor that automatically checks
         /// for updates in the routerdb and reloads when necessary.
         /// </summary>
-        public static void initialize () {
-            using (var stream = new FileInfo (@"mapdata/belgium.routerdb").OpenRead ()) {
+        public static void initialize (IConfiguration configuration) {
+            var paths = configuration.GetSection("Paths");
+            using (var stream = new FileInfo (paths.GetValue<string>("RouterdbFile")).OpenRead ()) {
                 routerDb = RouterDb.Deserialize (stream);
             }
             router = new Router (routerDb);
             monitor = new FilesMonitor<FileInfo> ((f) => {
-                using (var stream = new FileInfo (@"mapdata/belgium.routerdb").OpenRead ()) {
+                using (var stream = new FileInfo (paths.GetValue<string>("RouterdbFile")).OpenRead ()) {
                     routerDb = RouterDb.Deserialize (stream);
                 }
                 router = new Router (routerDb);
                 return true;
-            }, new FileInfo (@"mapdata/belgium.routerdb"));
+            }, new FileInfo (paths.GetValue<string>("RouterdbFile")));
             monitor.Start ();
-            monitor.AddFile ("mapdata/belgium.routerdb");
+            monitor.AddFile (paths.GetValue<string>("RouterdbFile"));
         }
 
         /// <summary>

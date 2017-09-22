@@ -7,6 +7,7 @@ using rideaway_backend.Exceptions;
 using rideaway_backend.Instance;
 using rideaway_backend.Model;
 using rideaway_backend.Util;
+using Microsoft.Extensions.Configuration;
 
 namespace rideaway_backend.Controllers {
     /// <summary>
