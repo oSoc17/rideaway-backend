@@ -51,9 +51,7 @@ namespace rideaway_backend.Model {
                 Route.Meta nextMeta = route.ShapeMetaFor (Next.Shape);
                 properties.Add ("nextColour", Next.GetAttribute ("cyclecolour", route));
                 properties.Add ("nextRef", Next.GetAttribute ("cycleref", route));
-
-                this.Direction = route.DirectionToNext (Instruction.Shape);
-                properties.Add ("direction", Direction.ToString ());
+                
                 if (Instruction.Type != "start" && Instruction.Type != "stop") {
                     this.Angle = route.RelativeDirectionAt (Instruction.Shape);
                     properties.Add ("angle", Angle.Direction.ToString ());

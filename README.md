@@ -1,4 +1,4 @@
-# rideaway-backend(v 2.0.0)
+# rideaway-backend(v 2.0.1)
 
 Backend for rideaway: a bicycle navigation application. Provides a routing endpoint where you can provide two coordinates to get the route between these points. Different routing profiles can be used to get different routing behavior and there is support for route instructions. Also provides an endpoint to request bicycle parkings in a certain radius around a location.
 
