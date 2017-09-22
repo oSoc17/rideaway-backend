@@ -105,7 +105,7 @@ namespace rideaway_backend.Extensions {
             }
             Instruction previous = null;
             Instruction ins = instructions[c];
-            while (ins.GetAttribute ("cycleref", Route) != "null" && c != instructions.Count) {
+            while (ins.GetAttribute ("cycleref", Route) != null && c != instructions.Count) {
                 if (currentRef == null) {
                     string refs = ins.GetAttribute ("cycleref", Route);
                     string colours = ins.GetAttribute ("cyclecolour", Route);
