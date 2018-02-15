@@ -7,4 +7,4 @@ wget http://download.geofabrik.de/europe/belgium-latest.osm.pbf -P ../mapdata --
 # Run IDP to convert the osm.pbf to a routerdb.
 # IDP is the data processing tool to convert a raw osm.pbf file to a
 # format optimized for routing.
-idp/rhel.7.4-x64/IDP --read-pbf ../mapdata/belgium-latest.osm.pbf --pr --create-routerdb vehicles=../profiles/bicycle.lua --write-routerdb ../mapdata/belgium.routerdb
+idp/rhel.7-x64/IDP --read-pbf ../mapdata/belgium-latest.osm.pbf --pr --create-routerdb vehicles=../profiles/bicycle.lua --write-routerdb ../mapdata/belgium.routerdb
