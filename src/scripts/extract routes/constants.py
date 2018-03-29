@@ -16,7 +16,7 @@ MISSING_LOCATION = "../data/missing/"
 DIFF_MISSING_LOCATION = "../data/diff/missing/"
 DIFF_WRONG_LOCATION = "../data/diff/wrong/"
 OUTPUT_LOCATION = "../data/output/"
-NETWORK_OUTPUT = "../../wwwroot/routes/network.geojson"
+NETWORK_OUTPUT = "../../wwwroot/routes/network.json"
 
 # False positives locations
 GFR_FALSE_POSITIVES = "../../false-positives/bm/"
